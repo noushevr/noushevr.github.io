@@ -74,7 +74,7 @@
 	},
 	"main": "index.html",
 	"window": {
-		"title": "Английский без регистрации",
+		"title": "Школа этикета",
 		"icon": "favicon-32x32.png",
 		"toolbar": true,
 		"frame": true,

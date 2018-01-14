@@ -58,3 +58,4 @@ typings/
 .env
 
 *.fw.png
+.src

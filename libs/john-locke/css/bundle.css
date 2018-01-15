@@ -1419,8 +1419,8 @@ u,
 	position: absolute;
 	top: 0;
 	right: 0;
-	background-color: #F03B4C;
-	opacity: 0.8;
+	/* background-color: #F03B4C;
+	opacity: 0.8; */
 }
 
 .matreshka {

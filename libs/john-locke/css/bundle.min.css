@@ -1397,6 +1397,17 @@ u,
 	background-size: cover;
 }
 
+.hero:before {
+	content: "";
+	width: 100%;
+	min-height: 100%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	/* background-color: #0591A1;
+	opacity: 0.5; */
+}
+
 .monolith {
 	width: 50%;
 	min-height: 100%;
@@ -1419,8 +1430,8 @@ u,
 	position: absolute;
 	top: 0;
 	right: 0;
-	background-color: #F03B4C;
-	opacity: 0.8;
+	/* background-color: #0591A1;
+	opacity: 0.8; */
 }
 
 .matreshka {
@@ -1536,7 +1547,7 @@ u,
 	top: calc(25% - 2.700rem);
 	left: calc(35% - 14.100rem);
 	overflow: hidden;
-	background-color: #3BF0DF;
+	background-color: #6AE4DC;
 	-webkit-box-shadow: 0.133rem 0.133rem 0.133rem 0 rgba(50, 50, 50, 0.3);
 	box-shadow: 0.133rem 0.133rem 0.133rem 0 rgba(50, 50, 50, 0.3);
 	margin: 0;
@@ -1548,7 +1559,7 @@ u,
 	font-weight: 400;
 	font-size: 1.200rem;
 	line-height: 1.500rem;
-	color: #1F1F1F;
+	color: #191919;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;

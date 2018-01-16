@@ -1,0 +1,67 @@
+{
+	"pages": [{
+			"href": "./pages/about/boarding.html",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-about-640x360.png",
+			"width": 640,
+			"height": 360,
+			"title": "Что получают дети",
+			"text": "Учебный процесс, примерное меню, медицинское обслуживание, физическое развитие, доставка в школу и домой, кружки, секции и экскурсии."
+		},
+		{
+			"href": "./pages/about/admission.html",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-admission-640x360.png",
+			"width": 640,
+			"height": 360,
+			"title": "Условия приема",
+			"text": "Необходимые документы, собеседование с психологом и тестирование учителями, разработка индивидуального плана обучения."
+		},
+		{
+			"href": "./pages/about/staff.html",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-staff-640x360.png",
+			"width": 640,
+			"height": 360,
+			"title": "Учителя и администрация",
+			"text": "Кто будет передавать знания вашим детям, и кто решит организационные вопросы."
+		},
+		{
+			"href": "https://calendar.google.com/calendar/embed?src=0ibrtju3294kp3bhi6psm29ssg%40group.calendar.google.com&ctz=Europe%2FMoscow",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-calendar-640x360.png",
+			"width": 640,
+			"height": 360,
+			"title": "Расписание",
+			"text": "План уроков общеобразовательного учебного компонента для всех классов на неделю."
+		},
+		{
+			"href": "https://www.youtube.com/channel/UCM_FKyn8OrpJV_MylKOaohA",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-youtube-640x360.png",
+			"width": 640,
+			"height": 360,
+			"title": "Канал ШЭВР на YouTube",
+			"text": "Учебный 2015 2016 год, День учителя 2016, 1 сентября 2016, 8 марта 2016."
+		},
+		{
+			"href": "https://vk.com/shevr",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-vk-640x360.png",
+			"width": 640,
+			"height": 360,
+			"title": "Паблик ШЭВР во ВКонтакте",
+			"text": "Новости, объявления, впечатления и комментарии, архив фото и видео."
+		},
+		{
+			"href": "https://www.youtube.com/channel/UCM_FKyn8OrpJV_MylKOaohA",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-youtube-640x360.png",
+			"width": 640,
+			"height": 360,
+			"title": "Канал ШЭВР на YouTube",
+			"text": "Учебный 2015 2016 год, День учителя 2016, 1 сентября 2016, 8 марта 2016."
+		},
+		{
+			"href": "https://vk.com/shevr",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-vk-640x360.png",
+			"width": 640,
+			"height": 360,
+			"title": "Паблик ШЭВР во ВКонтакте",
+			"text": "Новости, объявления, впечатления и комментарии, архив фото и видео."
+		}
+	]
+}

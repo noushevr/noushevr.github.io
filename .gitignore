@@ -60,3 +60,4 @@ typings/
 *.fw.png
 .src
 /libs/noushevr-homepage/js/*.map
+*.map

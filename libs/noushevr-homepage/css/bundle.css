@@ -1497,7 +1497,7 @@ u,
 	height: 30.800rem;
 }
 
-.noushevr-homepage {
+.aristotle {
 	width: 33.333rem;
 	height: 43.000rem;
 	position: absolute;
@@ -1506,13 +1506,13 @@ u,
 	margin: 0;
 }
 
-.noushevr-homepage a {
+.aristotle a {
 	color: inherit;
 	text-decoration: none;
 }
 
-.noushevr-homepage img,
-.noushevr-homepage canvas {
+.aristotle img,
+.aristotle canvas {
 	display: block;
 	width: 33.333rem;
 	height: 43.000rem;
@@ -2031,8 +2031,8 @@ u,
 		line-height: 3.200rem;
 	}
 
-	.intro span {
-		font-size: 1.867rem;
+	.intro h1 span {
+		font-size: 1.000rem;
 		line-height: 2.400rem;
 	}
 }
@@ -2092,9 +2092,9 @@ u,
 		line-height: 4.000rem;
 	}
 
-	.intro span {
-		font-size: 2.667rem;
-		line-height: 3.333rem;
+	.intro h1 span {
+		font-size: 1.000rem;
+		line-height: 2.400rem;
 	}
 
 	.qrcode {

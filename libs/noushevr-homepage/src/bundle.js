@@ -1100,7 +1100,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 
 	var scripts = [
 		forcedHTTP + "://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css",
-		"./libs/john-locke/css/bundle.min.css"];
+		"./libs/noushevr-homepage/css/bundle.min.css"];
 
 	var supportsPassive = (function () {
 		var support = false;
@@ -1152,7 +1152,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		"./cdn/Tocca.js/2.0.1/js/Tocca.fixed.min.js",
 		"./cdn/wheel-indicator/1.1.4/js/wheel-indicator.fixed.min.js"); */
 
-	scripts.push("./libs/john-locke/js/vendors.min.js");
+	scripts.push("./libs/noushevr-homepage/js/vendors.min.js");
 
 	/*!
 	 * load scripts after webfonts loaded using doesFontExist

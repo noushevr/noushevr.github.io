@@ -6,7 +6,7 @@ const BrowserWindow = electron.BrowserWindow; // a browser window module
 const path = require("path");
 // sending bugs to Electron project.
 electron.crashReporter.start({
-	productName : "englishextra",
+	productName : "noushevr",
 	companyName : "englishextra.github.io",
 	submitURL : "https://github.com/englishextra/englishextra.github.io/issues",
 	autoSubmit : true

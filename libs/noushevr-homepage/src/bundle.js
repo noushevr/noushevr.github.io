@@ -891,7 +891,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 					downloadAppImgSrc = [downloadAppImgSrc.slice(0, -3), "png"].join("");
 				}
 				downloadAppImg[src] = downloadAppImgSrc;
-				timerhowDownloadApp = setTimeout(showDownloadApp, 1000);
+				/* timerhowDownloadApp = setTimeout(showDownloadApp, 1000); */
 			}
 		}
 

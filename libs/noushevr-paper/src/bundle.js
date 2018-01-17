@@ -1629,7 +1629,7 @@ ToProgress, unescape, verge, VK, Ya*/
 				arrange();
 			}
 		};
-		addAppUpdatesLink();
+		/* addAppUpdatesLink(); */
 
 		var initMenuMore = function () {
 			var container = document[getElementById]("container") || "";
@@ -1869,7 +1869,7 @@ ToProgress, unescape, verge, VK, Ya*/
 				}, 3000);
 			}
 		};
-		initDownloadAppBtn();
+		/* initDownloadAppBtn(); */
 
 		var disqs;
 		var initDisqusOnScroll = function () {

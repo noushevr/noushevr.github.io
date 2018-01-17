@@ -1925,16 +1925,16 @@ ToProgress, unescape, verge, VK, Ya*/
 			var container = document[getElementById]("container") || "";
 			var suggestionUlId = "kamil-typo-autocomplete";
 			var suggestionUlClass = "kamil-autocomplete";
-			var jsonUrl = "../../app/libs/pwa-englishextra/json/routes.json";
+			var jsonUrl = "../../libs/noushevr-contents-cards/json/contents.json";
 			var processJsonResponse = function (jsonResponse) {
 				var ac;
 				try {
 					var jsonObj = safelyParseJSON(jsonResponse);
-					if (!jsonObj.hashes[0].hasOwnProperty("title")) {
+					if (!jsonObj.pages[0].hasOwnProperty("title")) {
 						throw new Error("incomplete JSON data: no title");
 					}
 					ac = new Kamil(textInputSelector, {
-							source: jsonObj.hashes,
+							source: jsonObj.pages,
 							property: "title",
 							minChars: 2
 						});
@@ -2018,7 +2018,7 @@ ToProgress, unescape, verge, VK, Ya*/
 					var handleKamilItem = function () {
 						e.inputElement.value = "";
 						handleTypoSuggestion();
-						root.location.href = "../../app/" + kamilItemLink;
+						root.location.href = kamilItemLink;
 					};
 					if (kamilItemLink) {
 						handleKamilItem();

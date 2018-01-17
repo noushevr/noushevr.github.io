@@ -1,6 +1,6 @@
 {
 	"pages": [{
-			"href": "./pages/about/boarding.html",
+			"href": "/pages/about/boarding.html",
 			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-about-640x360.png",
 			"width": 640,
 			"height": 360,
@@ -8,7 +8,7 @@
 			"text": "Учебный процесс, примерное меню, медицинское обслуживание, физическое развитие, доставка в школу и домой, кружки, секции и экскурсии."
 		},
 		{
-			"href": "./pages/about/admission.html",
+			"href": "/pages/about/admission.html",
 			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-admission-640x360.png",
 			"width": 640,
 			"height": 360,
@@ -16,7 +16,7 @@
 			"text": "Необходимые документы, собеседование с психологом и тестирование учителями, разработка индивидуального плана обучения."
 		},
 		{
-			"href": "./pages/about/staff.html",
+			"href": "/pages/about/staff.html",
 			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-staff-640x360.png",
 			"width": 640,
 			"height": 360,
@@ -24,7 +24,7 @@
 			"text": "Кто будет передавать знания вашим детям, и кто решит организационные вопросы."
 		},
 		{
-			"href": "./pages/about/timetable.html",
+			"href": "/pages/about/timetable.html",
 			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-calendar-640x360.png",
 			"width": 640,
 			"height": 360,

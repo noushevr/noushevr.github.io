@@ -591,6 +591,25 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 			return false;
 		};
 
+		var loadUnparsedJSON = function (url, callback, onerror) {
+			var cb = function (string) {
+				return callback && "function" === typeof callback && callback(string);
+			};
+			var x = root.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+			x.overrideMimeType("application/json;charset=utf-8");
+			x.open("GET", url, !0);
+			x.withCredentials = !1;
+			x.onreadystatechange = function () {
+				if (x.status === "404" || x.status === 0) {
+					console.log("Error XMLHttpRequest-ing file", x.status);
+					return onerror && "function" === typeof onerror && onerror();
+				} else if (x.readyState === 4 && x.status === 200 && x.responseText) {
+					cb(x.responseText);
+				}
+			};
+			x.send(null);
+		};
+
 		var debounce = function (func, wait) {
 			var timeout;
 			var args;
@@ -1005,7 +1024,7 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 			echo(dataSrcImgClass, jsonSrcKeyName);
 		};
 
-		var myHeaders = new Headers();
+		/* var myHeaders = new Headers();
 
 		fetch(jsonUrl, {
 			headers: myHeaders,
@@ -1027,6 +1046,13 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 				console.log("Cannot create card grid", err);
 			});
 		}).catch (function (err) {
+			console.log("cannot parse", jsonUrl, err);
+		}); */
+		loadUnparsedJSON(jsonUrl, function (text) {
+			generateCardGrid(text);
+			timerCreateGrid = setTimeout(createGrid, 200);
+			timerSetLazyloading = setTimeout(setLazyloading, 500);
+		}, function (err) {
 			console.log("cannot parse", jsonUrl, err);
 		});
 

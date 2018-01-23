@@ -24,15 +24,15 @@
 		"text": "Необходимые документы, собеседование с психологом и тестирование учителями, разработка индивидуального плана обучения."
 	},
 	{
-		"href": "/pages/about/aboutstaff.html",
-		"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-staff-640x360.png",
+		"href": "/pages/about/about_staff.html",
+		"src": "https://farm5.staticflickr.com/4619/39746372932_bc5309e2b1_z.jpg",
 		"width": 640,
 		"height": 360,
 		"title": "Учителя и администрация",
 		"text": "Кто будет передавать знания вашим детям, и кто решит организационные вопросы."
 	},
 	{
-		"href": "/pages/about/timetable.html",
+		"href": "/pages/about/about_timetable.html",
 		"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-calendar-640x360.png",
 		"width": 640,
 		"height": 360,

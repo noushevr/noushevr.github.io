@@ -28,7 +28,7 @@ app.on("ready", function () {
 			width : 844,
 			height : 640,
 			icon : "favicon.ico",
-			title : "Школа этикета"
+			title : "ШЭВР"
 		});
 	// load index.html
 	/* mainWindow.loadURL("file://" + __dirname + "/index.html"); */

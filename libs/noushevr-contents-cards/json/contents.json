@@ -16,14 +16,6 @@
 		"text": "Учебный процесс, примерное меню, медицинское обслуживание, физическое развитие, доставка в школу и домой, кружки, секции и экскурсии."
 	},
 	{
-		"href": "/pages/about/about_admission.html",
-		"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-admission-640x360.png",
-		"width": 640,
-		"height": 360,
-		"title": "Условия приема",
-		"text": "Необходимые документы, собеседование с психологом и тестирование учителями, разработка индивидуального плана обучения."
-	},
-	{
 		"href": "/pages/about/about_students.html",
 		"src": "https://farm5.staticflickr.com/4698/28079772599_b1de1cd120_z.jpg",
 		"width": 640,
@@ -36,16 +28,8 @@
 		"src": "https://farm5.staticflickr.com/4619/39746372932_bc5309e2b1_z.jpg",
 		"width": 640,
 		"height": 360,
-		"title": "Учителя и администрация",
+		"title": "Учителя",
 		"text": "Наши учителя развивают в детях самостоятельное стремление к получению знаний. Педагоги руководят становлением в учениках познавательных способностей, внимания и усидчивости, мышления и речи."
-	},
-	{
-		"href": "/pages/about/about_timetable.html",
-		"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-calendar-640x360.png",
-		"width": 640,
-		"height": 360,
-		"title": "Расписание",
-		"text": "План уроков общеобразовательного учебного компонента для всех классов на неделю."
 	},
 	{
 		"href": "/pages/events/events_fire_friend_fire_enemy.html",

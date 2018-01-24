@@ -1,0 +1,74 @@
+{
+	"pages": [{
+		"href": "/pages/events/events_new_year_2018_celebration.html",
+		"src": "https://farm5.staticflickr.com/4717/27988205899_088278ecdb_z.jpg",
+		"width": 640,
+		"height": 360,
+		"title": "Новый Год 2018 (видео)",
+		"text": "Видео праздничного предновогоднего концерта. 28 декабря 2017 г."
+	},
+	{
+		"href": "/pages/about/about_boarding.html",
+		"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-about-640x360.png",
+		"width": 640,
+		"height": 360,
+		"title": "Все о школе",
+		"text": "Учебный процесс, примерное меню, медицинское обслуживание, физическое развитие, доставка в школу и домой, кружки, секции и экскурсии."
+	},
+	{
+		"href": "/pages/about/about_admission.html",
+		"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-admission-640x360.png",
+		"width": 640,
+		"height": 360,
+		"title": "Условия приема",
+		"text": "Необходимые документы, собеседование с психологом и тестирование учителями, разработка индивидуального плана обучения."
+	},
+	{
+		"href": "/pages/about/about_students.html",
+		"src": "https://farm5.staticflickr.com/4698/28079772599_b1de1cd120_z.jpg",
+		"width": 640,
+		"height": 360,
+		"title": "Ученики",
+		"text": "Мы гордимся нашими одаренными выпускниками, закончившими школу с медалями и отличными оценками."
+	},
+	{
+		"href": "/pages/about/about_staff.html",
+		"src": "https://farm5.staticflickr.com/4619/39746372932_bc5309e2b1_z.jpg",
+		"width": 640,
+		"height": 360,
+		"title": "Учителя",
+		"text": "Наши учителя развивают в детях самостоятельное стремление к получению знаний. Педагоги руководят становлением в учениках познавательных способностей, внимания и усидчивости, мышления и речи."
+	},
+	{
+		"href": "/pages/about/about_timetable.html",
+		"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-calendar-640x360.png",
+		"width": 640,
+		"height": 360,
+		"title": "Расписание",
+		"text": "План уроков общеобразовательного учебного компонента для всех классов на неделю."
+	},
+	{
+		"href": "/pages/events/events_fire_friend_fire_enemy.html",
+		"src": "https://farm5.staticflickr.com/4666/38954249455_101a1800e2_z.jpg",
+		"width": 640,
+		"height": 360,
+		"title": "Огонь-друг, огонь-враг",
+		"text": "Участники окружного этапа городского конкурса «Огонь-друг, огонь-враг»."
+	},
+	{
+		"href": "https://www.youtube.com/channel/UCM_FKyn8OrpJV_MylKOaohA",
+		"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-youtube-640x360.png",
+		"width": 640,
+		"height": 360,
+		"title": "Канал на YouTube",
+		"text": "Учебный 2015 2016 год, День учителя 2016, 1 сентября 2016, 8 марта 2016."
+	},
+	{
+		"href": "https://vk.com/shevr",
+		"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/contents-banner-vk-640x360.png",
+		"width": 640,
+		"height": 360,
+		"title": "Паблик во ВКонтакте",
+		"text": "Новости, объявления, впечатления и комментарии, архив фото и видео."
+	}]
+}

@@ -1,6 +1,6 @@
 /*jslint browser: true */
 /*jslint node: true */
-/*global doesFontExist, echo, Headers, loadCSS, loadJsCss, Minigrid, platform,
+/*global ActiveXObject, doesFontExist, echo, loadCSS, loadJsCss, Minigrid, platform,
 Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 /*property console, join, split */
 /*!

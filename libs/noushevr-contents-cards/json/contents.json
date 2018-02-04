@@ -1,5 +1,21 @@
 {
 	"pages": [{
+		"href": "/pages/events/events_photo_shoot_02-01-2018.html",
+		"src": "https://farm5.staticflickr.com/4724/25209730817_4c415518e2_z.jpg",
+		"width": 640,
+		"height": 360,
+		"title": "Фотосессия 2 февраля",
+		"text": "Четверг. Прогулка. Уборка снега перед школой. Фотосессия 2 февраля 2018 г."
+	},
+	{
+		"href": "/pages/events/events_fire_friend_fire_enemy.html",
+		"src": "https://farm5.staticflickr.com/4666/38954249455_101a1800e2_z.jpg",
+		"width": 640,
+		"height": 360,
+		"title": "Огонь-друг, огонь-враг",
+		"text": "Участники окружного этапа городского конкурса «Огонь-друг, огонь-враг»."
+	},
+	{
 		"href": "/pages/events/events_new_year_2018_celebration.html",
 		"src": "https://farm5.staticflickr.com/4717/27988205899_088278ecdb_z.jpg",
 		"width": 640,
@@ -30,14 +46,6 @@
 		"height": 360,
 		"title": "Учителя",
 		"text": "Наши учителя развивают в детях самостоятельное стремление к получению знаний. Педагоги руководят становлением в учениках познавательных способностей, внимания и усидчивости, мышления и речи."
-	},
-	{
-		"href": "/pages/events/events_fire_friend_fire_enemy.html",
-		"src": "https://farm5.staticflickr.com/4666/38954249455_101a1800e2_z.jpg",
-		"width": 640,
-		"height": 360,
-		"title": "Огонь-друг, огонь-враг",
-		"text": "Участники окружного этапа городского конкурса «Огонь-друг, огонь-враг»."
 	},
 	{
 		"href": "https://www.youtube.com/channel/UCM_FKyn8OrpJV_MylKOaohA",

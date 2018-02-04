@@ -60,3 +60,5 @@ typings/
 *.fw.png
 .src
 *.map
+*.ai
+*.eps

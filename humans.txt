@@ -4,7 +4,7 @@
 		Serguei Shimansky
 
 	Site:
-		https://englishextra.github.io/
+		https://noushevr.github.io/
 
 	Location:
 		Europe/Moscow

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- modified github.com/dotclear/dotclear/blob/master/inc/public/default-templates/legacy/rss2.xsl -->
-<!-- gist.github.com/englishextra/acf31f209d0875c59b1c8fd532e25b87 -->
+<!-- gist.github.com/noushevr/acf31f209d0875c59b1c8fd532e25b87 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="1.0">
 	<xsl:output method="html" />
 	<xsl:template match="/">

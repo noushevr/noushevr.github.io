@@ -19,9 +19,9 @@
 	}],
 	"scope": "/",
 	"mjs_access_whitelist": [{
-		"url": "https://englishextra.github.io/"
+		"url": "https://noushevr.github.io/"
 	}],
-	"start_url": "https://englishextra.github.io/",
+	"start_url": "https://noushevr.github.io/",
 	"display": "standalone",
 	"orientation": "landscape",
 	"ms_TileColor": "#F03B4C",

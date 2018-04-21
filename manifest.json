@@ -23,7 +23,7 @@
 	}],
 	"start_url": "https://noushevr.github.io/",
 	"display": "standalone",
-	"orientation": "landscape",
+	"orientation": "any",
 	"ms_TileColor": "#F03B4C",
 	"theme_color": "#F03B4C",
 	"background_color": "#F03B4C"

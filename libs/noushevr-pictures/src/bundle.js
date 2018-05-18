@@ -970,7 +970,7 @@ QRCode, require, Timers, ToProgress, unescape, verge, VK, Ya*/
 			};
 			if (holder && locationHref) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					/* var jsUrl = "../cdn/qrjs2/0.1.6/js/qrjs2.fixed.min.js";
+					/* var jsUrl = "../../cdn/qrjs2/0.1.6/js/qrjs2.fixed.min.js";
 					if (!scriptIsLoaded(jsUrl)) {
 						var load;
 						load = new loadJsCss([jsUrl], initScript);
@@ -1209,8 +1209,8 @@ QRCode, require, Timers, ToProgress, unescape, verge, VK, Ya*/
 				}, 500);
 			};
 			if (grid && gridItem) {
-				/* var jsUrl = "../cdn/masonry/4.1.1/js/masonry.imagesloaded.pkgd.fixed.min.js"; */
-				/* var jsUrl = "../cdn/packery/2.1.1/js/packery.imagesloaded.pkgd.fixed.min.js";
+				/* var jsUrl = "../../cdn/masonry/4.1.1/js/masonry.imagesloaded.pkgd.fixed.min.js"; */
+				/* var jsUrl = "../../cdn/packery/2.1.1/js/packery.imagesloaded.pkgd.fixed.min.js";
 				if (!scriptIsLoaded(jsUrl)) {
 					var load;
 					load = new loadJsCss([jsUrl], initScript);
@@ -1491,7 +1491,7 @@ QRCode, require, Timers, ToProgress, unescape, verge, VK, Ya*/
 				initPhotoSwipeFromDOM(pswpGallerySelector);
 			};
 			if (pswpGallery && pswpGalleryItems) {
-				/* var jsUrl = "../cdn/photoswipe/4.1.0/js/photoswipe.photoswipe-ui-default.fixed.min.js";
+				/* var jsUrl = "../../cdn/photoswipe/4.1.0/js/photoswipe.photoswipe-ui-default.fixed.min.js";
 				if (!scriptIsLoaded(jsUrl)) {
 					var load;
 					load = new loadJsCss([jsUrl], initScript);
@@ -1674,7 +1674,7 @@ QRCode, require, Timers, ToProgress, unescape, verge, VK, Ya*/
 		hideProgressBar();
 	};
 
-	/* var scripts = ["../libs/noushevr-pictures/css/bundle.min.css"]; */
+	/* var scripts = ["../../libs/noushevr-pictures/css/bundle.min.css"]; */
 	var scripts = [];
 
 	var supportsPassive = (function () {
@@ -1718,16 +1718,16 @@ QRCode, require, Timers, ToProgress, unescape, verge, VK, Ya*/
 	})();
 
 	if (needsPolyfills) {
-		scripts.push("../cdn/polyfills/js/polyfills.fixed.min.js");
+		scripts.push("../../cdn/polyfills/js/polyfills.fixed.min.js");
 	}
 
-	/* var scripts = ["../cdn/verge/1.9.1/js/verge.fixed.min.js",
-		"../cdn/Tocca.js/2.0.1/js/Tocca.fixed.min.js",
-		"../cdn/packery/2.1.1/js/packery.imagesloaded.pkgd.fixed.min.js",
-		"../cdn/qrjs2/0.1.6/js/qrjs2.fixed.min.js",
-		"../cdn/photoswipe/4.1.0/js/photoswipe.photoswipe-ui-default.fixed.min.js"]; */
+	/* var scripts = ["../../cdn/verge/1.9.1/js/verge.fixed.min.js",
+		"../../cdn/Tocca.js/2.0.1/js/Tocca.fixed.min.js",
+		"../../cdn/packery/2.1.1/js/packery.imagesloaded.pkgd.fixed.min.js",
+		"../../cdn/qrjs2/0.1.6/js/qrjs2.fixed.min.js",
+		"../../cdn/photoswipe/4.1.0/js/photoswipe.photoswipe-ui-default.fixed.min.js"]; */
 
-	scripts.push("../libs/noushevr-pictures/js/vendors.min.js");
+	scripts.push("../../libs/noushevr-pictures/js/vendors.min.js");
 
 	/*!
 	 * load scripts after webfonts loaded using doesFontExist
@@ -1770,7 +1770,7 @@ QRCode, require, Timers, ToProgress, unescape, verge, VK, Ya*/
 
 	loadCSS(
 			/* forcedHTTP + "://fonts.googleapis.com/css?family=Roboto:300,400,400i,700,700i%7CRoboto+Mono:400,700&subset=cyrillic,latin-ext", */
-			"../libs/noushevr-pictures/css/bundle.min.css",
+			"../../libs/noushevr-pictures/css/bundle.min.css",
 			onFontsLoadedCallback
 		);
 

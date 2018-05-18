@@ -32,7 +32,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		}
 	}
 	prop = method = dummy = properties = methods = null;
-}("undefined" !== typeof window ? window : this));
+})("undefined" !== typeof window ? window : this);
 /*!
  * modified ToProgress v0.1.1
  * arguments.callee changed to TP, a local wrapper function,
@@ -1098,9 +1098,10 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		}
 	};
 
-	var scripts = [
+	/* var scripts = [
 		forcedHTTP + "://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css",
-		"./libs/noushevr-homepage/css/bundle.min.css"];
+		"./libs/noushevr-homepage/css/bundle.min.css"]; */
+	var scripts = [];
 
 	var supportsPassive = (function () {
 		var support = false;
@@ -1191,7 +1192,8 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	};
 
 	loadCSS(
-			forcedHTTP + "://fonts.googleapis.com/css?family=PT+Serif:400%7CRoboto:400,700%7CRoboto+Condensed:700&subset=cyrillic",
+			/* forcedHTTP + "://fonts.googleapis.com/css?family=PT+Serif:400%7CRoboto:400,700%7CRoboto+Condensed:700&subset=cyrillic", */
+			"./libs/noushevr-homepage/css/bundle.min.css",
 			onFontsLoadedCallback
 		);
 

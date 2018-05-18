@@ -32,7 +32,7 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 		}
 	}
 	prop = method = dummy = properties = methods = null;
-}("undefined" !== typeof window ? window : this));
+})("undefined" !== typeof window ? window : this);
 /*!
  * modified ToProgress v0.1.1
  * arguments.callee changed to TP, a local wrapper function,
@@ -600,7 +600,7 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 			x.open("GET", url, !0);
 			x.withCredentials = !1;
 			x.onreadystatechange = function () {
-				if (x.status === "404" || x.status === 0) {
+				if (x.status === "404" || x.status === "0") {
 					console.log("Error XMLHttpRequest-ing file", x.status);
 					return onerror && "function" === typeof onerror && onerror();
 				} else if (x.readyState === 4 && x.status === 200 && x.responseText) {
@@ -768,11 +768,18 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 			var target = document[getElementById](targetId) || "";
 			var jsonObj = safelyParseJSON(parsedJson);
 			if (jsonObj && template && target) {
-				var targetHtml = template[innerHTML] || "",
-				renderTargetTemplate = new t(targetHtml);
-				return renderTargetTemplate.render(jsonObj);
+				var targetHtml = template[innerHTML] || "";
+				if (root.t) {
+					var renderTargetTemplate = new t(targetHtml);
+					return renderTargetTemplate.render(jsonObj);
+				} else {
+					if (root.Mustache) {
+						Mustache.parse(targetHtml);
+						return Mustache.render(targetHtml, jsonObj);
+					}
+				}
 			}
-			return {};
+			return "cannot renderTemplate";
 		};
 
 		var insertTextAsFragment = function (text, container, callback) {
@@ -1360,7 +1367,8 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 		}
 	};
 
-	var scripts = ["./libs/noushevr-contents-cards/css/bundle.min.css"];
+	/* var scripts = ["./libs/noushevr-contents-cards/css/bundle.min.css"]; */
+	var scripts = [];
 
 	var supportsPassive = (function () {
 		var support = false;
@@ -1455,7 +1463,8 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 	};
 
 	loadCSS(
-			forcedHTTP + "://fonts.googleapis.com/css?family=Roboto:400,700&subset=cyrillic",
+			/* forcedHTTP + "://fonts.googleapis.com/css?family=Roboto:400,700&subset=cyrillic", */
+			"./libs/noushevr-contents-cards/css/bundle.min.css",
 			onFontsLoadedCallback
 		);
 

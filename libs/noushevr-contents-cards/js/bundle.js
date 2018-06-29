@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*jslint node: true */
-/*global ActiveXObject, doesFontExist, echo, loadCSS, loadJsCss, Minigrid, platform,
-Promise, t, ToProgress, VK, WheelIndicator, Ya*/
+/*global ActiveXObject, doesFontExist, echo, loadCSS, loadJsCss, Minigrid,
+ Mustache, platform, Promise, t, ToProgress, VK, WheelIndicator, Ya */
 /*property console, join, split */
 /*!
  * safe way to handle console.log
@@ -974,6 +974,32 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 			});
 		};
 
+		var addCardWrapCssRule = function () {
+			var toDashedAll = function (str) {
+				return str.replace((/([A-Z])/g), function ($1) {
+					return "-" + $1.toLowerCase();
+				});
+			};
+			var docElemStyle = docElem[style];
+			var transitionProperty = typeof docElemStyle.transition === "string" ?
+				"transition" : "WebkitTransition";
+			var transformProperty = typeof docElemStyle.transform === "string" ?
+				"transform" : "WebkitTransform";
+			var styleSheet = document[styleSheets][0] || "";
+			if (styleSheet) {
+				var cssRule;
+				cssRule = toDashedAll([".",
+							cardWrapClass,
+							"{",
+							transitionProperty,
+							": ",
+							transformProperty,
+							" 0.4s ease-out;",
+							"}"].join(""));
+				styleSheet.insertRule(cssRule, 0);
+			}
+		};
+
 		var timerCreateGrid;
 		var createGrid = function () {
 			clearTimeout(timerCreateGrid);
@@ -988,39 +1014,24 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 				mgrid = new Minigrid({
 						container: cardGridClass,
 						item: cardWrapClass,
-						gutter: 20,
-						done: onMinigridCreated
+						gutter: 20/* ,
+						done: onMinigridCreated */
 					});
 				mgrid.mount();
+				onMinigridCreated();
+				addCardWrapCssRule();
 			};
 			var updateMinigrid = function () {
-				mgrid.mount();
+				if (mgrid) {
+					var timers = setTimeout(function () {
+						clearTimeout(timers);
+						timers = null;
+						mgrid.mount();
+					}, 500);
+				}
 			};
 			initMinigrid();
 			root[_addEventListener]("resize", updateMinigrid, {passive: true});
-
-			var toDashedAll = function (str) {
-				return str.replace((/([A-Z])/g), function ($1) {
-					return "-" + $1.toLowerCase();
-				});
-			};
-			var docElemStyle = docElem[style];
-			var transitionProperty = typeof docElemStyle.transition === "string" ?
-				"transition" : "WebkitTransition";
-			var transformProperty = typeof docElemStyle.transform === "string" ?
-				"transform" : "WebkitTransform";
-			var styleSheet = document[styleSheets][0] || "";
-			if (styleSheet) {
-				var cssRule = toDashedAll([".",
-							cardWrapClass,
-							"{",
-							transitionProperty,
-							": ",
-							transformProperty,
-							" 0.4s ease-out;",
-							"}"].join(""));
-				styleSheet.insertRule(cssRule, 0);
-			}
 		};
 
 		var timerSetLazyloading;
@@ -1043,9 +1054,7 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 				throw new Error("cannot fetch", jsonUrl);
 			}
 		}).then(function (text) {
-			generateCardGrid(text).then(function (result) {
-				return result;
-			}).then(function () {
+			generateCardGrid(text).then(function () {
 				timerCreateGrid = setTimeout(createGrid, 500);
 			}).then(function () {
 				timerSetLazyloading = setTimeout(setLazyloading, 1000);
@@ -1111,7 +1120,7 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 								});
 							}
 						} catch (err) {
-							/* console.log("cannot update or init Ya", err); */
+							/* console.log("cannot yshare.updateContent or Ya.share2", err); */
 						}
 					}
 				};
@@ -1163,7 +1172,7 @@ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 								});
 								vlike = true;
 							} catch (err) {
-								/* console.log("cannot init VK", err); */
+								/* console.log("cannot VK.init", err); */
 							}
 						}
 					}

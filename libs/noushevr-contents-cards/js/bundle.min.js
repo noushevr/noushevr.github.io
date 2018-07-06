@@ -1021,13 +1021,13 @@
 				onMinigridCreated();
 				addCardWrapCssRule();
 			};
-			var updateMinigrid = function () {
+						var updateMinigrid = function () {
 				if (mgrid) {
-					var timers = setTimeout(function () {
-						clearTimeout(timers);
-						timers = null;
-						mgrid.mount();
-					}, 500);
+					var timer = setTimeout(function () {
+							clearTimeout(timer);
+							timer = null;
+							mgrid.mount();
+						}, 100);
 				}
 			};
 			initMinigrid();

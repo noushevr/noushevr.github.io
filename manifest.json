@@ -24,7 +24,7 @@
 	"start_url": "https://noushevr.github.io/",
 	"display": "standalone",
 	"orientation": "any",
-	"ms_TileColor": "#F03B4C",
-	"theme_color": "#F03B4C",
-	"background_color": "#F03B4C"
+	"ms_TileColor": "#79BFA8",
+	"theme_color": "#79BFA8",
+	"background_color": "#79BFA8"
 }

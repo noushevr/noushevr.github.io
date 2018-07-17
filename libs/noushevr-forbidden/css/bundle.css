@@ -1186,11 +1186,11 @@ u,
 
 .panel-nav-menu li a:active {
 	color: #191919;
-	background-color: #D83544;
+	background-color: #65D3AF;
 }
 
 .panel-nav-menu li a.is-active {
-	background-color: #801E26;
+	background-color: #448E76;
 }
 
 .btn-nav-menu {
@@ -1213,7 +1213,7 @@ u,
 .page.is-active .btn-nav-menu,
 .btn-nav-menu:active {
 	color: #191919;
-	background-color: #D83544;
+	background-color: #65D3AF;
 }
 
 .btn-nav-menu {
@@ -1271,7 +1271,7 @@ u,
 
 .btn-menu-more:active {
 	color: #191919;
-	background-color: #D83544;
+	background-color: #65D3AF;
 }
 
 .btn-menu-more {
@@ -1295,7 +1295,7 @@ u,
 	left: 3.200rem;
 	color: #191919;
 	background-color: #F2F2F2;
-	border: 0.067rem solid #D83544;
+	border: 0.067rem solid #65D3AF;
 	-webkit-box-shadow: 0.133rem 0.133rem 0.133rem 0 rgba(50, 50, 50, 0.3);
 	box-shadow: 0.133rem 0.133rem 0.133rem 0 rgba(50, 50, 50, 0.3);
 	-webkit-transition: visibility 0s, opacity 0.2s ease;
@@ -1344,7 +1344,7 @@ u,
 
 .panel-menu-more li a:active {
 	color: #191919;
-	background-color: #D83544;
+	background-color: #65D3AF;
 }
 
 /*!
@@ -1793,7 +1793,7 @@ u,
 
 .btn-share-buttons:active {
 	color: #191919;
-	background-color: #D83544;
+	background-color: #65D3AF;
 }
 
 .btn-share-buttons:before {
@@ -1869,7 +1869,7 @@ u,
 
 .btn-show-vk-like:active {
 	color: #191919;
-	background-color: #D83544;
+	background-color: #65D3AF;
 }
 
 .btn-show-vk-like:before {

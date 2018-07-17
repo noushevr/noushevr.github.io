@@ -346,7 +346,7 @@ ToProgress, unescape, VK, Ya*/
 
 	var progressBar = new ToProgress({
 			id: "top-progress-bar",
-			color: "#FF2C40",
+			color: "#65D3AF",
 			height: "0.200rem",
 			duration: 0.2,
 			zIndex: 999

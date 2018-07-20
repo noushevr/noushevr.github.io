@@ -2483,7 +2483,7 @@ body {
 	overflow-y: auto;
 	color: inherit;
 	background-color: #F2F2F2;
-	border: 0.067rem solid #65D3AF;
+	border: 0.067rem solid #EB421C;
 	border-radius: 0;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
@@ -2514,7 +2514,7 @@ body {
 
 .kamil-autocomplete li:active {
 	color: #191919;
-	background-color: #65D3AF;
+	background-color: #EB421C;
 }
 
 /*! @import "paper-animate.partial"; */
@@ -3084,11 +3084,11 @@ u,
 
 .panel-nav-menu li a:active {
 	color: #191919;
-	background-color: #65D3AF;
+	background-color: #EB421C;
 }
 
 .panel-nav-menu li a.is-active {
-	background-color: #448E76;
+	background-color: #A7412A;
 }
 
 .btn-nav-menu {
@@ -3112,7 +3112,7 @@ u,
 .page.is-active .btn-nav-menu,
 .btn-nav-menu:active {
 	color: #191919;
-	background-color: #65D3AF;
+	background-color: #EB421C;
 }
 
 .btn-nav-menu {
@@ -3171,7 +3171,7 @@ u,
 
 .btn-menu-more:active {
 	color: #191919;
-	background-color: #65D3AF;
+	background-color: #EB421C;
 }
 
 .btn-menu-more {
@@ -3195,7 +3195,7 @@ u,
 	left: 3.200rem;
 	color: #191919;
 	background-color: #F2F2F2;
-	border: 0.067rem solid #65D3AF;
+	border: 0.067rem solid #EB421C;
 	-webkit-box-shadow: 0.133rem 0.133rem 0.133rem 0 rgba(50, 50, 50, 0.3);
 	box-shadow: 0.133rem 0.133rem 0.133rem 0 rgba(50, 50, 50, 0.3);
 	-webkit-transition: visibility 0s, opacity 0.2s ease;
@@ -3244,7 +3244,7 @@ u,
 
 .panel-menu-more li a:active {
 	color: #191919;
-	background-color: #65D3AF;
+	background-color: #EB421C;
 }
 
 /*!
@@ -3328,8 +3328,8 @@ u,
 
 .holder-search-form button[type^=submit]:active {
 	color: #191919;
-	background-color: #65D3AF;
-	border: 0.067rem solid #65D3AF;
+	background-color: #EB421C;
+	border: 0.067rem solid #EB421C;
 }
 
 .holder-search-text:before,
@@ -4078,7 +4078,7 @@ u,
 
 .btn-share-buttons:active {
 	color: #191919;
-	background-color: #65D3AF;
+	background-color: #EB421C;
 }
 
 .btn-share-buttons:before {
@@ -4154,7 +4154,7 @@ u,
 
 .btn-show-vk-like:active {
 	color: #191919;
-	background-color: #65D3AF;
+	background-color: #EB421C;
 }
 
 .btn-show-vk-like:before {
@@ -4208,7 +4208,7 @@ u,
 
 .ui-totop:active {
 	color: #191919;
-	background-color: #65D3AF;
+	background-color: #EB421C;
 }
 
 /*!

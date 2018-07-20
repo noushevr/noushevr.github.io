@@ -400,7 +400,7 @@ ToProgress, unescape, verge, VK, Ya*/
 
 	var progressBar = new ToProgress({
 			id: "top-progress-bar",
-			color: "#65D3AF",
+			color: "#EB421C",
 			height: "0.200rem",
 			duration: 0.2,
 			zIndex: 999

@@ -1057,6 +1057,8 @@
 			generateCardGrid(text).then(function () {
 				timerCreateGrid = setTimeout(createGrid, 500);
 			}).then(function () {
+				manageExternalLinkAll(wrapper);
+			}).then(function () {
 				timerSetLazyloading = setTimeout(setLazyloading, 1000);
 			}).catch (function (err) {
 				console.log("Cannot create card grid", err);

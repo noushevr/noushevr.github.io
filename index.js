@@ -7,8 +7,8 @@ const path = require("path");
 // sending bugs to Electron project.
 electron.crashReporter.start({
 	productName : "noushevr",
-	companyName : "englishextra.github.io",
-	submitURL : "https://github.com/englishextra/englishextra.github.io/issues",
+	companyName : "noushevr.github.io",
+	submitURL : "https://github.com/noushevr/noushevr.github.io/issues",
 	autoSubmit : true
 });
 // a global link

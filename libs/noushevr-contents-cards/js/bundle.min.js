@@ -1260,8 +1260,8 @@
 			titleBar[classList].add(duration4msClass);
 			if (hasTouch) {
 				if (root.tocca) {
-					root[_addEventListener]("swipeup", hideTitleBar, {passive: true});
-					root[_addEventListener]("swipedown", revealTitleBar, {passive: true});
+					document[_addEventListener]("swipeup", hideTitleBar, {passive: true});
+					document[_addEventListener]("swipedown", revealTitleBar, {passive: true});
 				}
 			} else {
 				if (hasWheel) {
@@ -1327,8 +1327,8 @@
 			root[_addEventListener]("scroll", resetTitleBar, {passive: true});
 			if (hasTouch) {
 				if (root.tocca) {
-					root[_addEventListener]("swipeup", hideTitleBar, {passive: true});
-					root[_addEventListener]("swipedown", revealTitleBar, {passive: true});
+					document[_addEventListener]("swipeup", hideTitleBar, {passive: true});
+					document[_addEventListener]("swipedown", revealTitleBar, {passive: true});
 				}
 			} else {
 				if (hasWheel) {
@@ -1473,8 +1473,7 @@
 			slot = null;
 			onFontsLoaded();
 		} */
-		var load;
-		load = new loadJsCss(scripts, run);
+		onFontsLoaded();
 	};
 
 	loadCSS(

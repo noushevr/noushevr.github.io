@@ -1011,7 +1011,7 @@
 			};
 			var mgrid;
 		
-		var isBindedMinigridCardClass = "is-binded-minigrid-card";
+		var minigridCardIsBindedClass = "minigrid-card--is-binded";
 			var initMinigrid = function () {
 				mgrid = new Minigrid({
 						container: cardGridClass,

@@ -857,7 +857,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			var downloadAppLinkHref;
 			if (platformOsFamily.indexOf("Windows Phone", 0) !== -1 && "10.0" === platformOsVersion) {
 				downloadAppImgSrc = "./libs/products/img/download_wp_app_144x52.svg";
-				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_1.0.0.0_x86_debug.appx";
+				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_x86_debug.appx";
 			} else if (platformName.indexOf("IE Mobile", 0) !== -1 && ("7.5" === platformOsVersion || "8.0" === platformOsVersion || "8.1" === platformOsVersion)) {
 				downloadAppImgSrc = "./libs/products/img/download_wp_app_144x52.svg";
 				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra_app-debug.xap";

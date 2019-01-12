@@ -921,9 +921,7 @@ ToProgress, unescape, verge, VK, Ya*/
 		var handleExternalLink = function (url, ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
-			var logicHandleExternalLink = openDeviceBrowser.bind(null, url);
-			var debounceLogicHandleExternalLink = debounce(logicHandleExternalLink, 200);
-			debounceLogicHandleExternalLink();
+			debounce(openDeviceBrowser.bind(null, url), 200).call(root);
 		};
 		var manageExternalLinkAll = function (scope) {
 			var ctx = scope && scope.nodeName ? scope : "";
@@ -1550,7 +1548,7 @@ ToProgress, unescape, verge, VK, Ya*/
 			} else if (/(x86_64|x86-64|x64;|amd64|AMD64|x64_64)/i.test(navigatorUserAgent) && /(Linux|X11)/i.test(navigatorUserAgent)) {
 				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-x64.tar.gz";
 			} else if (/IEMobile/i.test(navigatorUserAgent)) {
-				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_1.0.0.0_x86_debug.appx";
+				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_x86_debug.appx";
 			} else {
 				if (/Android/i.test(navigatorUserAgent)) {
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-debug.apk";
@@ -1772,7 +1770,7 @@ ToProgress, unescape, verge, VK, Ya*/
 				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-x64.tar.gz";
 			} else if (/IEMobile/i.test(navigatorUserAgent)) {
 				bgUrl = "url(../../libs/products/img/download_wp_app_144x52.png)";
-				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_1.0.0.0_x86_debug.appx";
+				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_x86_debug.appx";
 			} else {
 				if (/Android/i.test(navigatorUserAgent)) {
 					bgUrl = "url(../../libs/products/img/download_android_app_144x52.png)";

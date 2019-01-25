@@ -705,9 +705,10 @@
 				var handleExternalLink = function (url, evt) {
 					evt.stopPropagation();
 					evt.preventDefault();
-					var logic = openDeviceBrowser.bind(null, url);
-					var debounceLogic = debounce(logic, 200);
-					debounceLogic();
+					var logic = function () {
+						openDeviceBrowser(url);
+					};
+					debounce(logic, 200).call(root);
 				};
 				if (!e[classList].contains(isBindedClass) &&
 						!e.target &&
@@ -1010,12 +1011,11 @@
 				minigrid[style].opacity = 1;
 			};
 			var mgrid;
-		
-		var minigridItemIsBindedClass = "minigrid__item--is-binded";
+
 			var initMinigrid = function () {
 				mgrid = new Minigrid({
-						container: minigridClass,
-						item: minigridItemClass,
+						container: "." + minigridClass,
+						item: "." + minigridItemClass,
 						gutter: 20/* ,
 						done: onMinigridCreated */
 					});
@@ -1136,8 +1136,7 @@
 					initScript();
 				}
 			};
-			var debounceLogic = debounce(logic, 200);
-			debounceLogic();
+			debounce(logic, 200).call(root);
 		};
 
 		if (btnShare && btnShareLink && yaShare2) {
@@ -1189,8 +1188,7 @@
 					initScript();
 				}
 			};
-			var debounceLogic = debounce(logic, 200);
-			debounceLogic();
+			debounce(logic, 200).call(root);
 		};
 
 		if (btnLike && btnLikeLink && vkLike) {
@@ -1211,8 +1209,7 @@
 					titleBar[classList].remove(isFixedClass);
 				}
 			};
-			var throttleLogic = throttle(logic, 100);
-			throttleLogic();
+			throttle(logic, 100).call(root);
 		};
 		if (titleBar) {
 			root[_addEventListener]("scroll", handleTitleBar, {passive: true});
@@ -1238,8 +1235,7 @@
 					titleBar[classList].remove(slideOutUpClass);
 				}
 			};
-			var throttleLogic = throttle(logic, 100);
-			throttleLogic();
+			throttle(logic, 100).call(root);
 		};
 		var revealTitleBar = function () {
 			var logic = function () {
@@ -1252,8 +1248,7 @@
 					titleBar[classList].remove(slideInDownClass);
 				}
 			};
-			var throttleLogic = throttle(logic, 100);
-			throttleLogic();
+			throttle(logic, 100).call(root);
 		};
 		if (wrapper && titleBar) {
 			titleBar[classList].add(animatedClass);
@@ -1298,8 +1293,7 @@
 					titleBar[classList].remove(isHiddenClass);
 				}
 			};
-			var throttleLogic = throttle(logic, 100);
-			throttleLogic();
+			throttle(logic, 100).call(root);
 		};
 		var revealTitleBar = function () {
 			var logic = function () {
@@ -1310,8 +1304,7 @@
 					titleBar[classList].remove(isFixedClass);
 				}
 			};
-			var throttleLogic = throttle(logic, 100);
-			throttleLogic();
+			throttle(logic, 100).call(root);
 		};
 		var resetTitleBar = function () {
 			var logic = function () {
@@ -1320,8 +1313,7 @@
 					titleBar[classList].remove(isFixedClass);
 				}
 			};
-			var throttleLogic = throttle(logic, 100);
-			throttleLogic();
+			throttle(logic, 100).call(root);
 		};
 		if (titleBar) {
 			root[_addEventListener]("scroll", resetTitleBar, {passive: true});
@@ -1371,8 +1363,7 @@
 					}
 				}
 			};
-			var throttleLogic = throttle(logic, 100);
-			throttleLogic();
+			throttle(logic, 100).call(root);
 		};
 		if (btnTotop) {
 			btnTotop[_addEventListener]("click", handleBtnTotop);
@@ -1424,15 +1415,15 @@
 	})();
 
 	if (needsPolyfills) {
-		scripts.push("../../cdn/polyfills/js/polyfills.fixed.min.js");
+		scripts.push("./cdn/polyfills/js/polyfills.fixed.min.js");
 	}
 
 	/* scripts.push("./cdn/platform/1.3.4/js/platform.fixed.min.js",
 		"./cdn/minigrid/3.1.1/js/minigrid.fixed.min.js",
 		"./cdn/echo.js/0.1.0/js/echo.fixed.min.js",
 		"./cdn/t.js/0.1.0/js/t.fixed.min.js",
-		"./cdn/Tocca.js/2.0.1/js/Tocca.fixed.min.js",
-		"./cdn/wheel-indicator/1.1.4/js/wheel-indicator.fixed.min.js"); */
+		"./cdn/Tocca.js/2.0.1/js/Tocca.fixed.js",
+		"./cdn/wheel-indicator/1.1.4/js/wheel-indicator.fixed.js"); */
 
 	scripts.push("./libs/noushevr-contents-cards/js/vendors.min.js");
 
@@ -1440,7 +1431,8 @@
 	 * load scripts after webfonts loaded using doesFontExist
 	 */
 
-	var supportsCanvas = (function () {
+	var supportsCanvas;
+	supportsCanvas	= (function () {
 		var elem = document[createElement]("canvas");
 		return !!(elem.getContext && elem.getContext("2d"));
 	})();
@@ -1458,7 +1450,8 @@
 			load = new loadJsCss(scripts, run);
 		};
 
-		var checkFontIsLoaded = function () {
+		var checkFontIsLoaded;
+		checkFontIsLoaded = function () {
 			/*!
 			 * check only for fonts that are used in current page
 			 */

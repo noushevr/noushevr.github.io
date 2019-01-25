@@ -501,7 +501,8 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 
 	var styleSheetsLength = document[styleSheets][_length] || 0;
 
-	var supportsCanvas = (function () {
+	var supportsCanvas;
+	supportsCanvas	= (function () {
 		var elem = document[createElement]("canvas");
 		return !!(elem.getContext && elem.getContext("2d"));
 	})();
@@ -751,9 +752,10 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 				var handleExternalLink = function (url, evt) {
 					evt.stopPropagation();
 					evt.preventDefault();
-					var logic = openDeviceBrowser.bind(null, url);
-					var debounceLogic = debounce(logic, 200);
-					debounceLogic();
+					var logic = function () {
+						openDeviceBrowser(url);
+					};
+					debounce(logic, 200).call(root);
 				};
 				if (!e[classList].contains(isBindedClass) &&
 						!e.target &&
@@ -838,13 +840,13 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		var downloadAppLink = downloadApp ? downloadApp[getElementsByTagName]("a")[0] || "" : "";
 		var downloadAppImg = downloadApp ? downloadApp[getElementsByTagName]("img")[0] || "" : "";
 
-		var timerhowDownloadApp;
+		/*var timerhowDownloadApp;
 		var showDownloadApp = function () {
 			clearTimeout(timerhowDownloadApp);
 			timerhowDownloadApp = null;
 			downloadApp[style][visibility] = "visible";
 			downloadApp[style][opacity] = 1;
-		};
+		};*/
 
 		if (navigatorUserAgent && downloadApp && downloadAppLink && downloadAppImg && root.platform) {
 			var platformOsFamily = platform.os.family || "";
@@ -1036,8 +1038,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 					initScript();
 				}
 			};
-			var debounceLogic = debounce(logic, 200);
-			debounceLogic();
+			debounce(logic, 200).call(root);
 		};
 
 		if (btnShare && btnShareLink && yaShare2) {
@@ -1089,8 +1090,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 					initScript();
 				}
 			};
-			var debounceLogic = debounce(logic, 200);
-			debounceLogic();
+			debounce(logic, 200).call(root);
 		};
 
 		if (btnLike && btnLikeLink && vkLike) {
@@ -1144,14 +1144,14 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	})();
 
 	if (needsPolyfills) {
-		scripts.push("../../cdn/polyfills/js/polyfills.fixed.min.js");
+		scripts.push("./cdn/polyfills/js/polyfills.fixed.min.js");
 	}
 
 	/* scripts.push("./cdn/platform/1.3.4/js/platform.fixed.min.js",
-		"./cdn/qrjs2/0.1.7/js/qrjs2.fixed.min.js",
-		"./cdn/parallax-js/3.1.0/js/parallax.fixed.min.js",
-		"./cdn/Tocca.js/2.0.1/js/Tocca.fixed.min.js",
-		"./cdn/wheel-indicator/1.1.4/js/wheel-indicator.fixed.min.js"); */
+		"./cdn/qrjs2/0.1.7/js/qrjs2.fixed.js",
+		"./cdn/parallax-js/3.1.0/js/parallax.fixed.js",
+		"./cdn/Tocca.js/2.0.1/js/Tocca.fixed.js",
+		"./cdn/wheel-indicator/1.1.4/js/wheel-indicator.fixed.js"); */
 
 	scripts.push("./libs/noushevr-homepage/js/vendors.min.js");
 
@@ -1174,7 +1174,8 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			load = new loadJsCss(scripts, run);
 		};
 
-		var checkFontIsLoaded = function () {
+		var checkFontIsLoaded;
+		checkFontIsLoaded = function () {
 			/*!
 			 * check only for fonts that are used in current page
 			 */

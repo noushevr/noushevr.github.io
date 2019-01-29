@@ -336,6 +336,8 @@
 	var docElem = document.documentElement || "";
 	var docBody = document.body || "";
 
+	var classList = "classList";
+	var className = "className";
 	var createElement = "createElement";
 	var createElementNS = "createElementNS";
 	var defineProperty = "defineProperty";
@@ -358,18 +360,20 @@
 		progressBar.hide();
 	};
 
-	/* progressBar.complete = function () {
-		return this.finish(),
-		this.hide();
-	}; */
-
 	progressBar.increase(20);
+
+	var toStringFn = {}.toString;
+	var supportsSvgSmilAnimation = !!document[createElementNS] && (/SVGAnimate/).test(toStringFn.call(document[createElementNS]("http://www.w3.org/2000/svg", "animate"))) || "";
+
+	if (supportsSvgSmilAnimation && docElem) {
+		docElem[classList].add("svganimate");
+	}
 
 	var hasTouch = "ontouchstart" in docElem || "";
 
 	var hasWheel = "onwheel" in document[createElement]("div") || void 0 !== document.onmousewheel || "";
 
-	var getHTTP = function (force) {
+	var getHTTP = function(force) {
 		var any = force || "";
 		var locationProtocol = root.location.protocol || "";
 		return "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : any ? "http" : "";
@@ -377,12 +381,16 @@
 
 	var forcedHTTP = getHTTP(true);
 
+	var supportsCanvas;
+	supportsCanvas	= (function () {
+		var elem = document[createElement]("canvas");
+		return !!(elem.getContext && elem.getContext("2d"));
+	})();
+
 	var run = function () {
 
 		var appendChild = "appendChild";
 		var body = "body";
-		var classList = "classList";
-		var className = "className";
 		var cloneNode = "cloneNode";
 		var createContextualFragment = "createContextualFragment";
 		var createDocumentFragment = "createDocumentFragment";
@@ -533,7 +541,18 @@
 		/*jshint bitwise: true */
 
 		var isNodejs = "undefined" !== typeof process && "undefined" !== typeof require || "";
-		var isElectron = "undefined" !== typeof root && root.process && "renderer" === root.process.type || "";
+		var isElectron = (function () {
+			if (typeof root !== "undefined" && typeof root.process === "object" && root.process.type === "renderer") {
+				return true;
+			}
+			if (typeof root !== "undefined" && typeof root.process !== "undefined" && typeof root.process.versions === "object" && !!root.process.versions.electron) {
+				return true;
+			}
+			if (typeof navigator === "object" && typeof navigator.userAgent === "string" && navigator.userAgent.indexOf("Electron") >= 0) {
+				return true;
+			}
+			return false;
+		})();
 		var isNwjs = (function () {
 			if ("undefined" !== typeof isNodejs && isNodejs) {
 				try {
@@ -556,9 +575,6 @@
 				var ns = isNwjs ? require("nw.gui").Shell : "";
 				return ns ? ns.openExternal(url) : "";
 			};
-			var triggerForHTTP = function () {
-				return true;
-			};
 			var triggerForLocal = function () {
 				return root.open(url, "_system", "scrollbars=1,location=no");
 			};
@@ -570,7 +586,7 @@
 				var locationProtocol = root.location.protocol || "",
 				hasHTTP = locationProtocol ? "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : "" : "";
 				if (hasHTTP) {
-					triggerForHTTP();
+					return true;
 				} else {
 					triggerForLocal();
 				}
@@ -1357,7 +1373,6 @@
 		}
 	};
 
-	/* var scripts = ["./libs/noushevr-contents-cards/css/bundle.min.css"]; */
 	var scripts = [];
 
 	var supportsPassive = (function () {
@@ -1381,8 +1396,6 @@
 		("undefined" === typeof root.Element && !("dataset" in docElem)) ||
 		!("classList" in document[createElement]("_")) ||
 		document[createElementNS] && !("classList" in document[createElementNS]("http://www.w3.org/2000/svg", "g")) ||
-		/* !document.importNode || */
-		/* !("content" in document[createElement]("template")) || */
 		(root.attachEvent && !root[_addEventListener]) ||
 		!("onhashchange" in root) ||
 		!Array.prototype.indexOf ||
@@ -1413,39 +1426,23 @@
 
 	scripts.push("./libs/noushevr-contents-cards/js/vendors.min.js");
 
-	/*!
-	 * load scripts after webfonts loaded using doesFontExist
-	 */
-
-	var supportsCanvas;
-	supportsCanvas	= (function () {
-		var elem = document[createElement]("canvas");
-		return !!(elem.getContext && elem.getContext("2d"));
-	})();
-
 	var onFontsLoadedCallback = function () {
-
 		var slot;
 		var onFontsLoaded = function () {
 			clearInterval(slot);
 			slot = null;
-
-			progressBar.increase(20);
-
+			if (!supportsSvgSmilAnimation && "undefined" !== typeof progressBar) {
+				progressBar.increase(20);
+			}
 			var load;
 			load = new loadJsCss(scripts, run);
 		};
-
 		var checkFontIsLoaded;
 		checkFontIsLoaded = function () {
-			/*!
-			 * check only for fonts that are used in current page
-			 */
-			if (doesFontExist("Roboto")) {
+			if (doesFontExist("Roboto") /* && doesFontExist("Roboto Mono") */) {
 				onFontsLoaded();
 			}
 		};
-
 		/* if (supportsCanvas) {
 			slot = setInterval(checkFontIsLoaded, 100);
 		} else {
@@ -1455,15 +1452,7 @@
 		onFontsLoaded();
 	};
 
-	loadCSS(
-			/* forcedHTTP + "://fonts.googleapis.com/css?family=Roboto:400,700&subset=cyrillic", */
-			"./libs/noushevr-contents-cards/css/bundle.min.css",
-			onFontsLoadedCallback
-		);
-
-	/*!
-	 * load scripts after webfonts loaded using webfontloader
-	 */
+	loadCSS("./libs/noushevr-contents-cards/css/bundle.min.css", onFontsLoadedCallback);
 
 	/* root.WebFontConfig = {
 		google: {
@@ -1488,20 +1477,16 @@
 	};
 
 	var onFontsLoadedCallback = function () {
-
 		var onFontsLoaded = function () {
-			progressBar.increase(20);
-
+			if (!supportsSvgSmilAnimation && "undefined" !== typeof progressBar) {
+				progressBar.increase(20);
+			}
 			var load;
 			load = new loadJsCss(scripts, run);
 		};
-
 		root.WebFontConfig.ready(onFontsLoaded);
 	};
 
 	var load;
-	load = new loadJsCss(
-			[forcedHTTP + "://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js"],
-			onFontsLoadedCallback
-		); */
+	load = new loadJsCss([forcedHTTP + "://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js"], onFontsLoadedCallback); */
 })("undefined" !== typeof window ? window : this, document);

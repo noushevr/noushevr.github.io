@@ -2550,7 +2550,7 @@
 				this._srcElement.value = this.term;
 				this._activeIndex = null;
 
-				for (var i = 0, l = items.length; i < l; i++) {
+				for (var i = 0, l = items.length; i < l; i += 1) {
 					if (items[i].classList.contains("kamil-active")) {
 						items[i].classList.remove("kamil-active");
 					}
@@ -2595,7 +2595,7 @@
 					children = list.children;
 				this.source = [];
 
-				for (var i = 0, l = children.length; i < l; i++) {
+				for (var i = 0, l = children.length; i < l; i += 1) {
 					var item = children[i];
 					this.source.push(item.textContent);
 				}
@@ -2803,7 +2803,7 @@
 	};
 
 	Kamil.prototype.renderMenu = function(ul, items) {
-		for (var i = 0, l = items.length; i < l; i++) {
+		for (var i = 0, l = items.length; i < l; i += 1) {
 			var item = items[i];
 
 			this._renderItemData(ul, item, i);

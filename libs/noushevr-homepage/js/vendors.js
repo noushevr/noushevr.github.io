@@ -1389,7 +1389,7 @@ function _typeof(obj) {
 		if (arguments.length > 1) {
 			var master = arguments[0];
 
-			for (var i = 1, l = arguments.length; i < l; i++) {
+			for (var i = 1, l = arguments.length; i < l; i += 1) {
 				var object = arguments[i];
 
 				for (var key in object) {
@@ -1433,7 +1433,7 @@ function _typeof(obj) {
 		var cssProperty = null;
 		var jsProperty = null;
 
-		for (var i = 0, l = this.vendors.length; i < l; i++) {
+		for (var i = 0, l = this.vendors.length; i < l; i += 1) {
 			if (this.vendors[i] !== null) {
 				cssProperty = this.vendors[i][0] + "transform";
 				jsProperty = this.vendors[i][1] + "Transform";
@@ -1548,7 +1548,7 @@ function _typeof(obj) {
 		this.depthsX = [];
 		this.depthsY = []; // Configure Layer Styles
 
-		for (var i = 0, l = this.layers.length; i < l; i++) {
+		for (var i = 0, l = this.layers.length; i < l; i += 1) {
 			var layer = this.layers[i];
 			if (this.transform3DSupport) this.accelerate(layer);
 			layer.style.position = i ? "absolute" : "relative";
@@ -1676,7 +1676,7 @@ function _typeof(obj) {
 		var jsProperty = this.propertyCache[property];
 
 		if (!jsProperty) {
-			for (var i = 0, l = this.vendors.length; i < l; i++) {
+			for (var i = 0, l = this.vendors.length; i < l; i += 1) {
 				if (this.vendors[i] !== null) {
 					jsProperty = this.camelCase(
 						this.vendors[i][1] + "-" + property
@@ -1777,7 +1777,7 @@ function _typeof(obj) {
 		this.vx += (this.mx - this.vx) * this.frictionX;
 		this.vy += (this.my - this.vy) * this.frictionY;
 
-		for (var i = 0, l = this.layers.length; i < l; i++) {
+		for (var i = 0, l = this.layers.length; i < l; i += 1) {
 			var layer = this.layers[i];
 			var depthX = this.depthsX[i];
 			var depthY = this.depthsY[i];

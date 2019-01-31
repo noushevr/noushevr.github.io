@@ -5878,7 +5878,7 @@ function _typeof(obj) {
 
 				var l = sChildren.length;
 
-				for (var i = 0; i < l; i++) {
+				for (var i = 0; i < l; i += 1) {
 					item = sChildren[i];
 					classAttr = item.className;
 

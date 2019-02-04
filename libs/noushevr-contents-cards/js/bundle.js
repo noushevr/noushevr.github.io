@@ -602,28 +602,28 @@
 		})();
 
 		var openDeviceBrowser = function (url) {
-			var triggerForElectron = function () {
+			var onElectron = function () {
 				var es = isElectron ? require("electron").shell : "";
 				return es ? es.openExternal(url) : "";
 			};
-			var triggerForNwjs = function () {
+			var onNwjs = function () {
 				var ns = isNwjs ? require("nw.gui").Shell : "";
 				return ns ? ns.openExternal(url) : "";
 			};
-			var triggerForLocal = function () {
+			var onLocal = function () {
 				return root.open(url, "_system", "scrollbars=1,location=no");
 			};
 			if (isElectron) {
-				triggerForElectron();
+				onElectron();
 			} else if (isNwjs) {
-				triggerForNwjs();
+				onNwjs();
 			} else {
 				var locationProtocol = root.location.protocol || "",
 				hasHTTP = locationProtocol ? "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : "" : "";
 				if (hasHTTP) {
 					return true;
 				} else {
-					triggerForLocal();
+					onLocal();
 				}
 			}
 		};
@@ -1333,7 +1333,7 @@
 			}
 		}
 
-		var initUiTotop = function () {
+		var manageBtnTotop = function () {
 			var btnClass = "ui-totop";
 			var btn = document[getElementsByClassName](btnClass)[0] || "";
 			if (!btn) {
@@ -1369,7 +1369,7 @@
 				root[_addEventListener]("scroll", handleUiTotopWindow, {passive: true});
 			}
 		};
-		initUiTotop();
+		manageBtnTotop();
 	};
 
 	var scripts = [];

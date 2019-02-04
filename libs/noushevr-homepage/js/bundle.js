@@ -414,10 +414,10 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		removeElement(ripple);
 	};
 
-	var timerDeferRemoveRipple;
+	var timerRipple;
 	var deferRemoveRipple = function () {
-		clearTimeout(timerDeferRemoveRipple);
-		timerDeferRemoveRipple = null;
+		clearTimeout(timerRipple);
+		timerRipple = null;
 		removeRipple();
 	};
 
@@ -427,10 +427,10 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		removeElement(loading);
 	};
 
-	var timerDeferRemoveLoading;
+	var timerLoading;
 	var deferRemoveLoading = function () {
-		clearTimeout(timerDeferRemoveLoading);
-		timerDeferRemoveLoading = null;
+		clearTimeout(timerLoading);
+		timerLoading = null;
 		removeLoading();
 	};
 
@@ -439,11 +439,11 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	var hidePreloaders = function () {
 		if (ripple) {
 			ripple[className] += " " + bounceOutUpClass;
-			timerDeferRemoveRipple = setTimeout(deferRemoveRipple, 5000);
+			timerRipple = setTimeout(deferRemoveRipple, 5000);
 		}
 		if (loading) {
 			loading[className] += " " + bounceOutUpClass;
-			timerDeferRemoveLoading = setTimeout(deferRemoveLoading, 5000);
+			timerLoading = setTimeout(deferRemoveLoading, 5000);
 		}
 	};
 
@@ -705,28 +705,28 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		})();
 
 		var openDeviceBrowser = function (url) {
-			var triggerForElectron = function () {
+			var onElectron = function () {
 				var es = isElectron ? require("electron").shell : "";
 				return es ? es.openExternal(url) : "";
 			};
-			var triggerForNwjs = function () {
+			var onNwjs = function () {
 				var ns = isNwjs ? require("nw.gui").Shell : "";
 				return ns ? ns.openExternal(url) : "";
 			};
-			var triggerForLocal = function () {
+			var onLocal = function () {
 				return root.open(url, "_system", "scrollbars=1,location=no");
 			};
 			if (isElectron) {
-				triggerForElectron();
+				onElectron();
 			} else if (isNwjs) {
-				triggerForNwjs();
+				onNwjs();
 			} else {
 				var locationProtocol = root.location.protocol || "",
 				hasHTTP = locationProtocol ? "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : "" : "";
 				if (hasHTTP) {
 					return true;
 				} else {
-					triggerForLocal();
+					onLocal();
 				}
 			}
 		};
@@ -772,113 +772,115 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 
 		manageExternalLinkAll(wrapper);
 
-		var qrcode = document[getElementsByClassName]("qrcode")[0] || "";
-
-		var timerShowQrcode;
-		var showQrcode = function () {
-			clearTimeout(timerShowQrcode);
-			timerShowQrcode = null;
-			qrcode[style][visibility] = "visible";
-			qrcode[style][opacity] = 1;
-		};
-
-		if (qrcode) {
-			var qrcodeImg = document[createElement]("img");
-			var qrcodeImgTitle = documentTitle ? ("Ссылка на страницу «" + documentTitle.replace(/\[[^\]]*?\]/g, "").trim() + "»") : "";
-			var qrcodeImgSrc = forcedHTTP + "://chart.googleapis.com/chart?cht=qr&chld=M%7C4&choe=UTF-8&chs=512x512&chl=" + encodeURIComponent(locationHref);
-			qrcodeImg[alt] = qrcodeImgTitle;
-			if (root.QRCode) {
-				if (supportsSvgAsImg) {
-					qrcodeImgSrc = QRCode.generateSVG(locationHref, {
-							ecclevel: "M",
-							fillcolor: "#FFFFFF",
-							textcolor: "#191919",
-							margin: 4,
-							modulesize: 8
-						});
-					var XMLS = new XMLSerializer();
-					qrcodeImgSrc = XMLS.serializeToString(qrcodeImgSrc);
-					qrcodeImgSrc = "data:image/svg+xml;base64," + root.btoa(unescape(encodeURIComponent(qrcodeImgSrc)));
-					qrcodeImg[src] = qrcodeImgSrc;
+		var manageLocationQrcode = function () {
+			var qrcode = document[getElementsByClassName]("qrcode")[0] || "";
+			var timerQrcode;
+			var showQrcode = function () {
+				clearTimeout(timerQrcode);
+				timerQrcode = null;
+				qrcode[style][visibility] = "visible";
+				qrcode[style][opacity] = 1;
+			};
+			if (qrcode) {
+				var img = document[createElement]("img");
+				var imgTitle = documentTitle ? ("Ссылка на страницу «" + documentTitle.replace(/\[[^\]]*?\]/g, "").trim() + "»") : "";
+				var imgSrc = forcedHTTP + "://chart.googleapis.com/chart?cht=qr&chld=M%7C4&choe=UTF-8&chs=512x512&chl=" + encodeURIComponent(locationHref);
+				img[alt] = imgTitle;
+				if (root.QRCode) {
+					if (supportsSvgAsImg) {
+						imgSrc = QRCode.generateSVG(locationHref, {
+								ecclevel: "M",
+								fillcolor: "#FFFFFF",
+								textcolor: "#191919",
+								margin: 4,
+								modulesize: 8
+							});
+						var XMLS = new XMLSerializer();
+						imgSrc = XMLS.serializeToString(imgSrc);
+						imgSrc = "data:image/svg+xml;base64," + root.btoa(unescape(encodeURIComponent(imgSrc)));
+						img[src] = imgSrc;
+					} else {
+						imgSrc = QRCode.generatePNG(locationHref, {
+								ecclevel: "M",
+								format: "html",
+								fillcolor: "#FFFFFF",
+								textcolor: "#1F1F1F",
+								margin: 4,
+								modulesize: 8
+							});
+						img[src] = imgSrc;
+					}
 				} else {
-					qrcodeImgSrc = QRCode.generatePNG(locationHref, {
-							ecclevel: "M",
-							format: "html",
-							fillcolor: "#FFFFFF",
-							textcolor: "#1F1F1F",
-							margin: 4,
-							modulesize: 8
-						});
-					qrcodeImg[src] = qrcodeImgSrc;
+					img[src] = imgSrc;
 				}
-			} else {
-				qrcodeImg[src] = qrcodeImgSrc;
+				img[title] = imgTitle;
+				qrcode[appendChild](img);
+				timerQrcode = setTimeout(showQrcode, 2000);
 			}
-			qrcodeImg[title] = qrcodeImgTitle;
-			qrcode[appendChild](qrcodeImg);
-			timerShowQrcode = setTimeout(showQrcode, 2000);
-		}
-
-		var downloadApp = document[getElementsByClassName]("download-app")[0] || "";
-		var downloadAppLink = downloadApp ? downloadApp[getElementsByTagName]("a")[0] || "" : "";
-		var downloadAppImg = downloadApp ? downloadApp[getElementsByTagName]("img")[0] || "" : "";
-
-		var timerhowDownloadApp;
-		var showDownloadApp = function () {
-			clearTimeout(timerhowDownloadApp);
-			timerhowDownloadApp = null;
-			downloadApp[style][visibility] = "visible";
-			downloadApp[style][opacity] = 1;
 		};
+		manageLocationQrcode();
 
-		if (root.platform && navigatorUserAgent && downloadApp && downloadAppLink && downloadAppImg) {
-			var platformOsFamily = platform.os.family || "";
-			var platformOsVersion = platform.os.version || "";
-			var platformOsArchitecture = platform.os.architecture || "";
-			/* console.log(navigatorUserAgent);
-			console.log(platform.os);
-			console.log(platformName + "|" + platformOsFamily + "|" + platformOsVersion + "|" + platformOsArchitecture + "|" + platformDescription); */
-			var downloadAppImgSrc;
-			var downloadAppLinkHref;
-			if (platformOsFamily.indexOf("Windows Phone", 0) !== -1 && "10.0" === platformOsVersion) {
-				downloadAppImgSrc = "./libs/products/img/download_wp_app_144x52.svg";
-				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_x86_debug.appx";
-			} else if (platformName.indexOf("IE Mobile", 0) !== -1 && ("7.5" === platformOsVersion || "8.0" === platformOsVersion || "8.1" === platformOsVersion)) {
-				downloadAppImgSrc = "./libs/products/img/download_wp_app_144x52.svg";
-				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra_app-debug.xap";
-			} else if (platformOsFamily.indexOf("Windows", 0) !== -1 && 64 === platformOsArchitecture) {
-				downloadAppImgSrc = "./libs/products/img/download_windows_app_144x52.svg";
-				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-win32-x64-setup.exe";
-			} else if (platformOsFamily.indexOf("Windows", 0) !== -1 && 32 === platformOsArchitecture) {
-				downloadAppImgSrc = "./libs/products/img/download_windows_app_144x52.svg";
-				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-win32-ia32-setup.exe";
-			} else if (navigatorUserAgent.indexOf("armv7l", 0) !== -1) {
-				downloadAppImgSrc = "./libs/products/img/download_linux_app_144x52.svg";
-				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-armv7l.tar.gz";
-			} else if (navigatorUserAgent.indexOf("X11", 0) !== -1 && navigatorUserAgent.indexOf("Linux") !== -1 && 64 === platformOsArchitecture) {
-				downloadAppImgSrc = "./libs/products/img/download_linux_app_144x52.svg";
-				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-x64.tar.gz";
-			} else if (navigatorUserAgent.indexOf("X11", 0) !== -1 && navigatorUserAgent.indexOf("Linux") !== -1 && 32 === platformOsArchitecture) {
-				downloadAppImgSrc = "./libs/products/img/download_linux_app_144x52.svg";
-				downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-ia32.tar.gz";
-			} else {
-				if (platformOsFamily.indexOf("Android", 0) !== -1) {
-					downloadAppImgSrc = "./libs/products/img/download_android_app_144x52.svg";
-					downloadAppLinkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-debug.apk";
+		var manageDownloadAppBtn = function () {
+			var downloadApp = document[getElementsByClassName]("download-app")[0] || "";
+			var link = downloadApp ? downloadApp[getElementsByTagName]("a")[0] || "" : "";
+			var img = downloadApp ? downloadApp[getElementsByTagName]("img")[0] || "" : "";
+			var timer;
+			var showDownloadApp = function () {
+				clearTimeout(timer);
+				timer = null;
+				downloadApp[style][visibility] = "visible";
+				downloadApp[style][opacity] = 1;
+			};
+			if (root.platform && navigatorUserAgent && downloadApp && link && img) {
+				var platformOsFamily = platform.os.family || "";
+				var platformOsVersion = platform.os.version || "";
+				var platformOsArchitecture = platform.os.architecture || "";
+				/* console.log(navigatorUserAgent);
+				console.log(platform.os);
+				console.log(platformName + "|" + platformOsFamily + "|" + platformOsVersion + "|" + platformOsArchitecture + "|" + platformDescription); */
+				var imgSrc;
+				var linkHref;
+				if (platformOsFamily.indexOf("Windows Phone", 0) !== -1 && "10.0" === platformOsVersion) {
+					imgSrc = "./libs/products/img/download_wp_app_144x52.svg";
+					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_x86_debug.appx";
+				} else if (platformName.indexOf("IE Mobile", 0) !== -1 && ("7.5" === platformOsVersion || "8.0" === platformOsVersion || "8.1" === platformOsVersion)) {
+					imgSrc = "./libs/products/img/download_wp_app_144x52.svg";
+					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra_app-debug.xap";
+				} else if (platformOsFamily.indexOf("Windows", 0) !== -1 && 64 === platformOsArchitecture) {
+					imgSrc = "./libs/products/img/download_windows_app_144x52.svg";
+					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-win32-x64-setup.exe";
+				} else if (platformOsFamily.indexOf("Windows", 0) !== -1 && 32 === platformOsArchitecture) {
+					imgSrc = "./libs/products/img/download_windows_app_144x52.svg";
+					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-win32-ia32-setup.exe";
+				} else if (navigatorUserAgent.indexOf("armv7l", 0) !== -1) {
+					imgSrc = "./libs/products/img/download_linux_app_144x52.svg";
+					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-armv7l.tar.gz";
+				} else if (navigatorUserAgent.indexOf("X11", 0) !== -1 && navigatorUserAgent.indexOf("Linux") !== -1 && 64 === platformOsArchitecture) {
+					imgSrc = "./libs/products/img/download_linux_app_144x52.svg";
+					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-x64.tar.gz";
+				} else if (navigatorUserAgent.indexOf("X11", 0) !== -1 && navigatorUserAgent.indexOf("Linux") !== -1 && 32 === platformOsArchitecture) {
+					imgSrc = "./libs/products/img/download_linux_app_144x52.svg";
+					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-ia32.tar.gz";
+				} else {
+					if (platformOsFamily.indexOf("Android", 0) !== -1) {
+						imgSrc = "./libs/products/img/download_android_app_144x52.svg";
+						linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-debug.apk";
+					}
+				}
+				if (imgSrc && linkHref) {
+					link[href] = linkHref;
+					link.rel = "noopener";
+					link.target = "_blank";
+					link[title] = "Скачать приложение";
+					if (!supportsSvgAsImg) {
+						imgSrc = [imgSrc.slice(0, -3), "png"].join("");
+					}
+					img[src] = imgSrc;
+					timer = setTimeout(showDownloadApp, 1000);
 				}
 			}
-			if (downloadAppImgSrc && downloadAppLinkHref) {
-				downloadAppLink[href] = downloadAppLinkHref;
-				downloadAppLink.rel = "noopener";
-				downloadAppLink.target = "_blank";
-				downloadAppLink[title] = "Скачать приложение";
-				if (!supportsSvgAsImg) {
-					downloadAppImgSrc = [downloadAppImgSrc.slice(0, -3), "png"].join("");
-				}
-				downloadAppImg[src] = downloadAppImgSrc;
-				timerhowDownloadApp = setTimeout(showDownloadApp, 1000);
-			}
-		}
+		};
+		manageDownloadAppBtn();
 
 		var scene = document[getElementById]("scene") || "";
 		var parallax;

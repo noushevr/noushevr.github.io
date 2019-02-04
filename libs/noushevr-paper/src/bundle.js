@@ -758,28 +758,28 @@ ToProgress, unescape, verge, VK, Ya*/
 		})();
 
 		var openDeviceBrowser = function (url) {
-			var triggerForElectron = function () {
+			var onElectron = function () {
 				var es = isElectron ? require("electron").shell : "";
 				return es ? es.openExternal(url) : "";
 			};
-			var triggerForNwjs = function () {
+			var onNwjs = function () {
 				var ns = isNwjs ? require("nw.gui").Shell : "";
 				return ns ? ns.openExternal(url) : "";
 			};
-			var triggerForLocal = function () {
+			var onLocal = function () {
 				return root.open(url, "_system", "scrollbars=1,location=no");
 			};
 			if (isElectron) {
-				triggerForElectron();
+				onElectron();
 			} else if (isNwjs) {
-				triggerForNwjs();
+				onNwjs();
 			} else {
 				var locationProtocol = root.location.protocol || "",
 				hasHTTP = locationProtocol ? "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : "" : "";
 				if (hasHTTP) {
 					return true;
 				} else {
-					triggerForLocal();
+					onLocal();
 				}
 			}
 		};
@@ -1005,7 +1005,8 @@ ToProgress, unescape, verge, VK, Ya*/
 				}
 			};
 		};
-		var initNotifier42WriteComment = function () {
+
+		var manageNotifier42Comment = function () {
 			if ("undefined" !== typeof getHTTP && !getHTTP()) {
 				return;
 			}
@@ -1038,9 +1039,9 @@ ToProgress, unescape, verge, VK, Ya*/
 				}, 16000);
 			}
 		};
-		initNotifier42WriteComment();
+		manageNotifier42Comment();
 
-		var initTablesort = function () {
+		var manageTablesort = function () {
 			var tableSort = document[getElementsByClassName]("table-sort") || "";
 			var initScript = function () {
 				var arrange = function (e) {
@@ -1069,9 +1070,9 @@ ToProgress, unescape, verge, VK, Ya*/
 				initScript();
 			}
 		};
-		initTablesort();
+		manageTablesort();
 
-		var handleDataSrcImageAll = function () {
+		var handleDataSrcImgAll = function () {
 			var img = document[getElementsByClassName]("data-src-img") || "";
 			var arrange = function (e) {
 				if (verge.inY(e, 100)) {
@@ -1103,20 +1104,20 @@ ToProgress, unescape, verge, VK, Ya*/
 			}
 		};
 
-		var handleDataSrcImageAllWindow = throttle(handleDataSrcImageAll, 100);
+		var handleDataSrcImgAllWindow = throttle(handleDataSrcImgAll, 100);
 
-		var manageDataSrcImageAll = function () {
-			root[_removeEventListener]("scroll", handleDataSrcImageAllWindow, {passive: true});
-			root[_removeEventListener]("resize", handleDataSrcImageAllWindow);
-			root[_addEventListener]("scroll", handleDataSrcImageAllWindow, {passive: true});
-			root[_addEventListener]("resize", handleDataSrcImageAllWindow);
+		var manageDataSrcImgAll = function () {
+			root[_removeEventListener]("scroll", handleDataSrcImgAllWindow, {passive: true});
+			root[_removeEventListener]("resize", handleDataSrcImgAllWindow);
+			root[_addEventListener]("scroll", handleDataSrcImgAllWindow, {passive: true});
+			root[_addEventListener]("resize", handleDataSrcImgAllWindow);
 			var timer = setTimeout(function () {
 					clearTimeout(timer);
 					timer = null;
-					handleDataSrcImageAll();
+					handleDataSrcImgAll();
 				}, 100);
 		};
-		manageDataSrcImageAll();
+		manageDataSrcImgAll();
 
 		var handleDataSrcIframeAll = function () {
 			var ifrm = document[getElementsByClassName]("data-src-iframe") || "";
@@ -1291,7 +1292,7 @@ ToProgress, unescape, verge, VK, Ya*/
 		manageExpandingLayers();
 
 		var qcode;
-		var manageLocationQrCodeImage = function () {
+		var manageLocationQrcode = function () {
 			var holder = document[getElementsByClassName]("holder-location-qrcode")[0] || "";
 			var locationHref = root.location.href || "";
 			var initScript = function () {
@@ -1339,9 +1340,9 @@ ToProgress, unescape, verge, VK, Ya*/
 				initScript();
 			}
 		};
-		manageLocationQrCodeImage();
+		manageLocationQrcode();
 
-		var initNavMenu = function () {
+		var manageNavMenu = function () {
 			var container = document[getElementById]("container") || "";
 			var page = document[getElementById]("page") || "";
 			var btnNavMenu = document[getElementsByClassName]("btn-nav-menu")[0] || "";
@@ -1443,10 +1444,10 @@ ToProgress, unescape, verge, VK, Ya*/
 				addItemHandlerAll();
 			}
 		};
-		initNavMenu();
+		manageNavMenu();
 
-		var addAppUpdatesLink;
-		addAppUpdatesLink = function () {
+		var addUpdateAppLink;
+		addUpdateAppLink = function () {
 			var panel = document[getElementsByClassName]("panel-menu-more")[0] || "";
 			var items = panel ? panel[getElementsByTagName]("li") || "" : "";
 			var navigatorUserAgent = navigator.userAgent || "";
@@ -1490,9 +1491,9 @@ ToProgress, unescape, verge, VK, Ya*/
 				arrange();
 			}
 		};
-		/* addAppUpdatesLink(); */
+		/* addUpdateAppLink(); */
 
-		var initMenuMore = function () {
+		var manageMenuMore = function () {
 			var container = document[getElementById]("container") || "";
 			var page = document[getElementById]("page") || "";
 			var holderPanelMenuMore = document[getElementsByClassName]("holder-panel-menu-more")[0] || "";
@@ -1535,7 +1536,7 @@ ToProgress, unescape, verge, VK, Ya*/
 				addItemHandlerAll();
 			}
 		};
-		initMenuMore();
+		manageMenuMore();
 
 		var hideOtherIsSocial = function (thisObj) {
 			var _thisObj = thisObj || this;
@@ -1657,8 +1658,8 @@ ToProgress, unescape, verge, VK, Ya*/
 		};
 		manageVKLikeButton();
 
-		var initDownloadAppBtn;
-		initDownloadAppBtn = function () {
+		var manageDownloadAppBtn;
+		manageDownloadAppBtn = function () {
 			var navigatorUserAgent = navigator.userAgent || "";
 			var cls = "btn-download-app";
 			var an = "animated";
@@ -1721,10 +1722,10 @@ ToProgress, unescape, verge, VK, Ya*/
 				}, 3000);
 			}
 		};
-		/* initDownloadAppBtn(); */
+		/* manageDownloadAppBtn(); */
 
 		var disqs;
-		var initDisqusOnScroll = function () {
+		var manageDisqusOnScroll = function () {
 			var disqusThread = document[getElementById]("disqus_thread") || "";
 			var btn = document[getElementsByClassName]("btn-show-disqus")[0] || "";
 			var locationHref = root.location.href || "";
@@ -1766,10 +1767,10 @@ ToProgress, unescape, verge, VK, Ya*/
 				}
 			}
 		};
-		initDisqusOnScroll();
+		manageDisqusOnScroll();
 
 		var kaml;
-		var initKamilAutocomplete = function () {
+		var manageKamil = function () {
 			var searchForm = document[getElementsByClassName]("search-form")[0] || "";
 			var textInputSelector = "#text";
 			var textInput = document[getElementById]("text") || "";
@@ -1891,9 +1892,9 @@ ToProgress, unescape, verge, VK, Ya*/
 				initScript();
 			}
 		};
-		initKamilAutocomplete();
+		manageKamil();
 
-		var initUiTotop = function () {
+		var manageBtnTotop = function () {
 			var btnClass = "ui-totop";
 			var btn = document[getElementsByClassName](btnClass)[0] || "";
 			if (!btn) {
@@ -1929,7 +1930,7 @@ ToProgress, unescape, verge, VK, Ya*/
 				root[_addEventListener]("scroll", handleUiTotopWindow, {passive: true});
 			}
 		};
-		initUiTotop();
+		manageBtnTotop();
 
 		hideProgressBar();
 	};

@@ -358,8 +358,8 @@
 
 	var getHTTP = function(force) {
 		var any = force || "";
-		var locationProtocol = root.location.protocol || "";
-		return "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : any ? "http" : "";
+		var locProtocol = root.location.protocol || "";
+		return "http:" === locProtocol ? "http" : "https:" === locProtocol ? "https" : any ? "http" : "";
 	};
 
 	var forcedHTTP = getHTTP(true);
@@ -393,8 +393,8 @@
 		var isFixedClass = "is-fixed";
 		var isHiddenClass = "is-hidden";
 
-		var documentTitle = document[title] || "";
-		var navigatorUserAgent = navigator.userAgent || "";
+		var docTitle = document[title] || "";
+		var navUA = navigator.userAgent || "";
 
 		progressBar.increase(20);
 
@@ -418,15 +418,15 @@
 			return newYear + "-" + newMonth + "-" + newDay;
 		})();
 
-		var platformName = "";
-		var platformDescription = "";
-		if (root.platform && navigatorUserAgent) {
-			platformName = platform.name || "";
-			platformDescription = platform.description || "";
-			document[title] = documentTitle +
+		var brName = "";
+		var brDescription = "";
+		if (root.platform && navUA) {
+			brName = platform.name || "";
+			brDescription = platform.description || "";
+			document[title] = docTitle +
 			" [" +
 			(getHumanDate ? " " + getHumanDate : "") +
-			(platformDescription ? " " + platformDescription : "") +
+			(brDescription ? " " + brDescription : "") +
 			((hasTouch || hasWheel) ? " with" : "") +
 			(hasTouch ? " touch" : "") +
 			((hasTouch && hasWheel) ? "," : "") +
@@ -438,7 +438,7 @@
 			var context = scope && scope.nodeName ? scope : "";
 			var mo;
 			var getMutations = function (e) {
-				var triggerOnMutation = function (m) {
+				var onMutation = function (m) {
 					console.log("mutations observer: " + m.type);
 					console.log(m.type, "target: " + m.target.tagName + ("." + m.target[className] || "#" + m.target.id || ""));
 					console.log(m.type, "added: " + m.addedNodes[_length] + " nodes");
@@ -451,7 +451,7 @@
 				var i,
 				l;
 				for (i = 0, l = e[_length]; i < l; i += 1) {
-					triggerOnMutation(e[i]);
+					onMutation(e[i]);
 				}
 				i = l = null;
 			};
@@ -618,8 +618,8 @@
 			} else if (isNwjs) {
 				onNwjs();
 			} else {
-				var locationProtocol = root.location.protocol || "",
-				hasHTTP = locationProtocol ? "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : "" : "";
+				var locProtocol = root.location.protocol || "",
+				hasHTTP = locProtocol ? "http:" === locProtocol ? "http" : "https:" === locProtocol ? "https" : "" : "";
 				if (hasHTTP) {
 					return true;
 				} else {
@@ -630,7 +630,7 @@
 
 		var manageExternalLinkAll = function () {
 			var link = document[getElementsByTagName]("a") || "";
-			var handleExternalLink = function (url, ev) {
+			var handle = function (url, ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
@@ -648,7 +648,7 @@
 							e.target = "_blank";
 							e.rel = "noopener";
 						} else {
-							e[_addEventListener]("click", handleExternalLink.bind(null, url));
+							e[_addEventListener]("click", handle.bind(null, url));
 						}
 						e[classList].add(externalLinkIsBindedClass);
 					}
@@ -825,245 +825,248 @@
 			return count;
 		};
 
-		var generateCardGrid = function (text) {
+		var manageMinigrid = function () {
+			var generateCardGrid = function (text) {
 
-			return new Promise(function (resolve, reject) {
+				return new Promise(function (resolve, reject) {
 
-				var jsonObj;
+					var jsonObj;
 
-				try {
-					jsonObj = JSON.parse(text);
-					if (!jsonObj.pages[0][jsonHrefKeyName]) {
-						throw new Error("incomplete JSON data: no " + jsonHrefKeyName);
-					} else if (!jsonObj.pages[0][jsonSrcKeyName]) {
-						throw new Error("incomplete JSON data: no " + jsonSrcKeyName);
-					} else if (!jsonObj.pages[0][jsonWidthKeyName]) {
-						throw new Error("incomplete JSON data: no " + jsonWidthKeyName);
-					} else if (!jsonObj.pages[0][jsonHeightKeyName]) {
-						throw new Error("incomplete JSON data: no " + jsonHeightKeyName);
-					} else if (!jsonObj.pages[0][jsonTitleKeyName]) {
-						throw new Error("incomplete JSON data: no " + jsonTitleKeyName);
-					} else {
-						if (!jsonObj.pages[0][jsonTextKeyName]) {
-							throw new Error("incomplete JSON data: no " + jsonTextKeyName);
+					try {
+						jsonObj = JSON.parse(text);
+						if (!jsonObj.pages[0][jsonHrefKeyName]) {
+							throw new Error("incomplete JSON data: no " + jsonHrefKeyName);
+						} else if (!jsonObj.pages[0][jsonSrcKeyName]) {
+							throw new Error("incomplete JSON data: no " + jsonSrcKeyName);
+						} else if (!jsonObj.pages[0][jsonWidthKeyName]) {
+							throw new Error("incomplete JSON data: no " + jsonWidthKeyName);
+						} else if (!jsonObj.pages[0][jsonHeightKeyName]) {
+							throw new Error("incomplete JSON data: no " + jsonHeightKeyName);
+						} else if (!jsonObj.pages[0][jsonTitleKeyName]) {
+							throw new Error("incomplete JSON data: no " + jsonTitleKeyName);
+						} else {
+							if (!jsonObj.pages[0][jsonTextKeyName]) {
+								throw new Error("incomplete JSON data: no " + jsonTextKeyName);
+							}
+						}
+					} catch (err) {
+						console.log("cannot init generateCardGrid", err);
+						return;
+					}
+
+					/*!
+					 * render with <template> and t.js
+					 * the drawback you cannot know image sizes
+					 * attention to last param: if false cloneNode will be used
+					 * and setting listeners or changing its CSS will not be possible
+					 * attention IE11 counts elements within template tag,
+					 * so you might have length + 1
+					 * to fix that select elemnts in a container that doesnt have source template
+					 */
+					var pagesKeysNumber = countObjKeys(jsonObj.pages);
+					insertFromTemplate(jsonObj, "template_card_grid", "target_card_grid", function () {
+						if (wrapper[getElementsByClassName](minigridItemClass)[pagesKeysNumber - 1]) {
+							resolve();
+						} else {
+							reject();
+						}
+					}, true);
+
+					/*!
+					 * render with creating DOM Nodes
+					 */
+					/* var alt = "alt";
+					var createTextNode = "createTextNode";
+					var dataset = "dataset";
+					var hasOwnProperty = "hasOwnProperty";
+					var href = "href";
+					var src = "src";
+
+					var cardClass = "card";
+					var cardContentClass = "card-content";
+
+					jsonObj = jsonObj.pages;
+
+					var df = document[createDocumentFragment]();
+
+					var key;
+					for (key in jsonObj) {
+						if (jsonObj[hasOwnProperty](key)) {
+							if (jsonObj[key][jsonSrcKeyName] &&
+								jsonObj[key][jsonHrefKeyName] &&
+								jsonObj[key][jsonTitleKeyName] &&
+								jsonObj[key][jsonTextKeyName]) {
+
+								var minigridItem = document[createElement]("div");
+								minigridItem[classList].add(minigridItemClass);
+
+								var card = document[createElement]("div");
+								card[classList].add(cardClass);
+
+								minigridItem[appendChild](card);
+
+								var img = document[createElement]("img");
+								if (jsonObj[key][jsonWidthKeyName] && jsonObj[key][jsonHeightKeyName]) {
+									img[src] = ["data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20",
+										jsonObj[key][jsonWidthKeyName],
+										"%20",
+										jsonObj[key][jsonHeightKeyName],
+										"%27%2F%3E"].join("");
+								} else {
+									var dummyImg = new Image();
+									dummyImg[src] = jsonObj[key][jsonSrcKeyName];
+									var dummyImgWidth = dummyImg.naturalWidth;
+									var dummyImgHeight = dummyImg.naturalHeight;
+									if (dummyImgWidth && dummyImgHeight) {
+										img[src] = ["data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20", dummyImgWidth, "%20", dummyImgHeight, "%27%2F%3E"].join("");
+									} else {
+										img[src] = ["data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20", 640, "%20", 360, "%27%2F%3E"].join("");
+									}
+								}
+								img[dataset][jsonSrcKeyName] = jsonObj[key][jsonSrcKeyName];
+								img[classList].add(dataSrcImgClass);
+								img[alt] = "";
+
+								card[appendChild](img);
+
+								var cardContent = document[createElement]("div");
+								cardContent[classList].add(cardContentClass);
+
+								var heading2 = document[createElement]("h2");
+								heading2[appendChild](document[createTextNode](jsonObj[key][jsonTitleKeyName]));
+
+								cardContent[appendChild](heading2);
+
+								var paragraph = document[createElement]("p");
+								paragraph[appendChild](document[createTextNode](jsonObj[key][jsonTextKeyName]));
+
+								cardContent[appendChild](paragraph);
+
+								card[appendChild](cardContent);
+
+								var cardLink = document[createElement]("a");
+								cardLink[href] = ["", jsonObj[key][jsonHrefKeyName]].join("");
+								cardLink[appendChild](card);
+
+								minigridItem[appendChild](cardLink);
+
+								df[appendChild](minigridItem);
+								df[appendChild](document[createTextNode]("\n"));
+							}
 						}
 					}
-				} catch (err) {
-					console.log("cannot init generateCardGrid", err);
-					return;
-				}
+					key = null;
 
-				/*!
-				 * render with <template> and t.js
-				 * the drawback you cannot know image sizes
-				 * attention to last param: if false cloneNode will be used
-				 * and setting listeners or changing its CSS will not be possible
-				 * attention IE11 counts elements within template tag,
-				 * so you might have length + 1
-				 * to fix that select elemnts in a container that doesnt have source template
-				 */
-				var pagesKeysNumber = countObjKeys(jsonObj.pages);
-				insertFromTemplate(jsonObj, "template_card_grid", "target_card_grid", function () {
-					if (wrapper[getElementsByClassName](minigridItemClass)[pagesKeysNumber - 1]) {
+					if (minigrid[appendChild](df)) {
 						resolve();
 					} else {
 						reject();
-					}
-				}, true);
-
-				/*!
-				 * render with creating DOM Nodes
-				 */
-				/* var alt = "alt";
-				var createTextNode = "createTextNode";
-				var dataset = "dataset";
-				var hasOwnProperty = "hasOwnProperty";
-				var href = "href";
-				var src = "src";
-
-				var cardClass = "card";
-				var cardContentClass = "card-content";
-
-				jsonObj = jsonObj.pages;
-
-				var df = document[createDocumentFragment]();
-
-				var key;
-				for (key in jsonObj) {
-					if (jsonObj[hasOwnProperty](key)) {
-						if (jsonObj[key][jsonSrcKeyName] &&
-							jsonObj[key][jsonHrefKeyName] &&
-							jsonObj[key][jsonTitleKeyName] &&
-							jsonObj[key][jsonTextKeyName]) {
-
-							var minigridItem = document[createElement]("div");
-							minigridItem[classList].add(minigridItemClass);
-
-							var card = document[createElement]("div");
-							card[classList].add(cardClass);
-
-							minigridItem[appendChild](card);
-
-							var img = document[createElement]("img");
-							if (jsonObj[key][jsonWidthKeyName] && jsonObj[key][jsonHeightKeyName]) {
-								img[src] = ["data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20",
-									jsonObj[key][jsonWidthKeyName],
-									"%20",
-									jsonObj[key][jsonHeightKeyName],
-									"%27%2F%3E"].join("");
-							} else {
-								var dummyImg = new Image();
-								dummyImg[src] = jsonObj[key][jsonSrcKeyName];
-								var dummyImgWidth = dummyImg.naturalWidth;
-								var dummyImgHeight = dummyImg.naturalHeight;
-								if (dummyImgWidth && dummyImgHeight) {
-									img[src] = ["data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20", dummyImgWidth, "%20", dummyImgHeight, "%27%2F%3E"].join("");
-								} else {
-									img[src] = ["data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20", 640, "%20", 360, "%27%2F%3E"].join("");
-								}
-							}
-							img[dataset][jsonSrcKeyName] = jsonObj[key][jsonSrcKeyName];
-							img[classList].add(dataSrcImgClass);
-							img[alt] = "";
-
-							card[appendChild](img);
-
-							var cardContent = document[createElement]("div");
-							cardContent[classList].add(cardContentClass);
-
-							var heading2 = document[createElement]("h2");
-							heading2[appendChild](document[createTextNode](jsonObj[key][jsonTitleKeyName]));
-
-							cardContent[appendChild](heading2);
-
-							var paragraph = document[createElement]("p");
-							paragraph[appendChild](document[createTextNode](jsonObj[key][jsonTextKeyName]));
-
-							cardContent[appendChild](paragraph);
-
-							card[appendChild](cardContent);
-
-							var cardLink = document[createElement]("a");
-							cardLink[href] = ["", jsonObj[key][jsonHrefKeyName]].join("");
-							cardLink[appendChild](card);
-
-							minigridItem[appendChild](cardLink);
-
-							df[appendChild](minigridItem);
-							df[appendChild](document[createTextNode]("\n"));
-						}
-					}
-				}
-				key = null;
-
-				if (minigrid[appendChild](df)) {
-					resolve();
-				} else {
-					reject();
-				} */
-			});
-		};
-
-		var addCardWrapCssRule = function () {
-			var toDashedAll = function (str) {
-				return str.replace((/([A-Z])/g), function ($1) {
-					return "-" + $1.toLowerCase();
+					} */
 				});
 			};
-			var docElemStyle = docElem[style];
-			var transitionProperty = typeof docElemStyle.transition === "string" ?
-				"transition" : "WebkitTransition";
-			var transformProperty = typeof docElemStyle.transform === "string" ?
-				"transform" : "WebkitTransform";
-			var styleSheet = document[styleSheets][0] || "";
-			if (styleSheet) {
-				var cssRule;
-				cssRule = toDashedAll([".",
-							minigridItemClass,
-							"{",
-							transitionProperty,
-							": ",
-							transformProperty,
-							" 0.4s ease-out;",
-							"}"].join(""));
-				styleSheet.insertRule(cssRule, 0);
-			}
-		};
 
-		var timerCreateGrid;
-		var createGrid = function () {
-			clearTimeout(timerCreateGrid);
-			timerCreateGrid = null;
-
-			var onMinigridCreated = function () {
-				minigrid[style].visibility = "visible";
-				minigrid[style].opacity = 1;
-			};
-			var mgrid;
-
-			var initMinigrid = function () {
-				mgrid = new Minigrid({
-						container: "." + minigridClass,
-						item: "." + minigridItemClass,
-						gutter: 20/* ,
-						done: onMinigridCreated */
+			var addCardWrapCssRule = function () {
+				var toDashedAll = function (str) {
+					return str.replace((/([A-Z])/g), function ($1) {
+						return "-" + $1.toLowerCase();
 					});
-				mgrid.mount();
-				onMinigridCreated();
-				addCardWrapCssRule();
-			};
-						var updateMinigrid = function () {
-				if (mgrid) {
-					var timer = setTimeout(function () {
-							clearTimeout(timer);
-							timer = null;
-							mgrid.mount();
-						}, 100);
+				};
+				var docElemStyle = docElem[style];
+				var transitionProperty = typeof docElemStyle.transition === "string" ?
+					"transition" : "WebkitTransition";
+				var transformProperty = typeof docElemStyle.transform === "string" ?
+					"transform" : "WebkitTransform";
+				var styleSheet = document[styleSheets][0] || "";
+				if (styleSheet) {
+					var cssRule;
+					cssRule = toDashedAll([".",
+								minigridItemClass,
+								"{",
+								transitionProperty,
+								": ",
+								transformProperty,
+								" 0.4s ease-out;",
+								"}"].join(""));
+					styleSheet.insertRule(cssRule, 0);
 				}
 			};
-			initMinigrid();
-			root[_addEventListener]("resize", updateMinigrid, {passive: true});
-		};
 
-		var timerSetLazyloading;
-		var setLazyloading = function () {
-			clearTimeout(timerSetLazyloading);
-			timerSetLazyloading = null;
+			var timerCreateGrid;
+			var createGrid = function () {
+				clearTimeout(timerCreateGrid);
+				timerCreateGrid = null;
 
-			echo(dataSrcImgClass, jsonSrcKeyName);
-		};
+				var onMinigridCreated = function () {
+					minigrid[style].visibility = "visible";
+					minigrid[style].opacity = 1;
+				};
+				var mgrid;
 
-		/* var myHeaders = new Headers();
+				var initMinigrid = function () {
+					mgrid = new Minigrid({
+							container: "." + minigridClass,
+							item: "." + minigridItemClass,
+							gutter: 20/* ,
+							done: onMinigridCreated */
+						});
+					mgrid.mount();
+					onMinigridCreated();
+					addCardWrapCssRule();
+				};
+							var updateMinigrid = function () {
+					if (mgrid) {
+						var timer = setTimeout(function () {
+								clearTimeout(timer);
+								timer = null;
+								mgrid.mount();
+							}, 100);
+					}
+				};
+				initMinigrid();
+				root[_addEventListener]("resize", updateMinigrid, {passive: true});
+			};
 
-		fetch(jsonUrl, {
-			headers: myHeaders,
-			credentials: "same-origin"
-		}).then(function (response) {
-			if (response.ok) {
-				return response.text();
-			} else {
-				throw new Error("cannot fetch", jsonUrl);
-			}
-		}).then(function (text) {
-			generateCardGrid(text).then(function () {
-				timerCreateGrid = setTimeout(createGrid, 500);
-			}).then(function () {
-				manageExternalLinkAll(wrapper);
-			}).then(function () {
-				timerSetLazyloading = setTimeout(setLazyloading, 1000);
+			var timerSetLazyloading;
+			var setLazyloading = function () {
+				clearTimeout(timerSetLazyloading);
+				timerSetLazyloading = null;
+
+				echo(dataSrcImgClass, jsonSrcKeyName);
+			};
+
+			/* var myHeaders = new Headers();
+
+			fetch(jsonUrl, {
+				headers: myHeaders,
+				credentials: "same-origin"
+			}).then(function (response) {
+				if (response.ok) {
+					return response.text();
+				} else {
+					throw new Error("cannot fetch", jsonUrl);
+				}
+			}).then(function (text) {
+				generateCardGrid(text).then(function () {
+					timerCreateGrid = setTimeout(createGrid, 500);
+				}).then(function () {
+					manageExternalLinkAll(wrapper);
+				}).then(function () {
+					timerSetLazyloading = setTimeout(setLazyloading, 1000);
+				}).catch (function (err) {
+					console.log("Cannot create card grid", err);
+				});
 			}).catch (function (err) {
-				console.log("Cannot create card grid", err);
+				console.log("cannot parse", jsonUrl, err);
+			}); */
+			loadUnparsedJSON(jsonUrl, function (text) {
+				generateCardGrid(text);
+				timerCreateGrid = setTimeout(createGrid, 200);
+				timerSetLazyloading = setTimeout(setLazyloading, 500);
+			}, function (err) {
+				console.log("cannot parse", jsonUrl, err);
 			});
-		}).catch (function (err) {
-			console.log("cannot parse", jsonUrl, err);
-		}); */
-		loadUnparsedJSON(jsonUrl, function (text) {
-			generateCardGrid(text);
-			timerCreateGrid = setTimeout(createGrid, 200);
-			timerSetLazyloading = setTimeout(setLazyloading, 500);
-		}, function (err) {
-			console.log("cannot parse", jsonUrl, err);
-		});
+		};
+		manageMinigrid();
 
 		var hideOtherIsSocial = function (thisObj) {
 			var _thisObj = thisObj || this;
@@ -1082,13 +1085,13 @@
 		root[_addEventListener]("click", hideOtherIsSocial);
 
 		var yshare;
-		var manageShareButton = function () {
+		var manageShareButtons = function () {
 			var btn = document[getElementsByClassName]("btn-share-buttons")[0] || "";
 			var yaShare2Id = "ya-share2";
 			var yaShare2 = document[getElementById](yaShare2Id) || "";
-			var locationHref = root.location || "";
-			var documentTitle = document[title] || "";
-			var handleShareButton = function (ev) {
+			var locHref = root.location || "";
+			var docTitle = document[title] || "";
+			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
@@ -1098,16 +1101,16 @@
 						try {
 							if (yshare) {
 								yshare.updateContent({
-									title: documentTitle,
-									description: documentTitle,
-									url: locationHref
+									title: docTitle,
+									description: docTitle,
+									url: locHref
 								});
 							} else {
 								yshare = Ya.share2(yaShare2Id, {
 									content: {
-										title: documentTitle,
-										description: documentTitle,
-										url: locationHref
+										title: docTitle,
+										description: docTitle,
+										url: locHref
 									}
 								});
 							}
@@ -1127,13 +1130,13 @@
 			};
 			if (btn && yaShare2) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handleShareButton);
+					btn[_addEventListener]("click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
 			}
 		};
-		manageShareButton();
+		manageShareButtons();
 
 		var vlike;
 		var manageVKLikeButton = function () {
@@ -1141,7 +1144,7 @@
 			var vkLike = document[getElementById](vkLikeId) || "";
 			var holderVkLike = document[getElementsByClassName]("holder-vk-like")[0] || "";
 			var btn = document[getElementsByClassName]("btn-show-vk-like")[0] || "";
-			var handleVKLikeButton = function (ev) {
+			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
@@ -1177,7 +1180,7 @@
 			};
 			if (btn && vkLike) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handleVKLikeButton);
+					btn[_addEventListener]("click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
@@ -1334,7 +1337,7 @@
 		}
 
 		var manageBtnTotop = function () {
-			var btnClass = "ui-totop";
+			var btnClass = "btn-totop";
 			var btn = document[getElementsByClassName](btnClass)[0] || "";
 			if (!btn) {
 				btn = document[createElement]("a");
@@ -1345,12 +1348,12 @@
 				btn.title = "Наверх";
 				docBody[appendChild](btn);
 			}
-			var handleUiTotop = function (ev) {
+			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				scroll2Top(0, 20000);
 			};
-			var handleUiTotopWindow = function (_this) {
+			var handleWindow = function (_this) {
 				var logic = function () {
 					var scrollPosition = _this.pageYOffset || docElem.scrollTop || docBody.scrollTop || "";
 					var windowHeight = _this.innerHeight || docElem.clientHeight || docBody.clientHeight || "";
@@ -1365,8 +1368,8 @@
 				throttle(logic, 100).call(root);
 			};
 			if (docBody) {
-				btn[_addEventListener]("click", handleUiTotop);
-				root[_addEventListener]("scroll", handleUiTotopWindow, {passive: true});
+				btn[_addEventListener]("click", handle);
+				root[_addEventListener]("scroll", handleWindow, {passive: true});
 			}
 		};
 		manageBtnTotop();
@@ -1419,9 +1422,10 @@
 	scripts.push("./libs/noushevr-contents-cards/js/vendors.min.js");
 
 	var bodyFontFamily = "Roboto";
-	var onFontsLoadedCallback = function () {
+
+	var onFontsLoaded = function () {
 		var slot;
-		var onFontsLoaded = function () {
+		var init = function () {
 			clearInterval(slot);
 			slot = null;
 			if (!supportsSvgSmilAnimation && "undefined" !== typeof progressBar) {
@@ -1430,21 +1434,21 @@
 			var load;
 			load = new loadJsCss(scripts, run);
 		};
-		var checkFontIsLoaded;
-		checkFontIsLoaded = function () {
+		var check;
+		check = function () {
 			if (doesFontExist(bodyFontFamily)) {
-				onFontsLoaded();
+				init();
 			}
 		};
 		/* if (supportsCanvas) {
-			slot = setInterval(checkFontIsLoaded, 100);
+			slot = setInterval(check, 100);
 		} else {
 			slot = null;
-			onFontsLoaded();
+			init();
 		} */
-		onFontsLoaded();
+		init();
 	};
 
 	var load;
-	load = new loadJsCss(["./libs/noushevr-contents-cards/css/bundle.min.css"], onFontsLoadedCallback);
+	load = new loadJsCss(["./libs/noushevr-contents-cards/css/bundle.min.css"], onFontsLoaded);
 })("undefined" !== typeof window ? window : this, document);

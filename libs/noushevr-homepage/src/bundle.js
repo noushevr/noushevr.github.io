@@ -367,8 +367,8 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 
 	var getHTTP = function(force) {
 		var any = force || "";
-		var locationProtocol = root.location.protocol || "";
-		return "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : any ? "http" : "";
+		var locProtocol = root.location.protocol || "";
+		return "http:" === locProtocol ? "http" : "https:" === locProtocol ? "https" : any ? "http" : "";
 	};
 
 	var forcedHTTP = getHTTP(true);
@@ -386,12 +386,12 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		root[_addEventListener]("load", hideProgressBar);
 	}
 
-	var removeElement = function (elem) {
-		if (elem) {
-			if ("undefined" !== typeof elem[remove]) {
-				return elem[remove]();
+	var removeElement = function (a) {
+		if (a) {
+			if ("undefined" !== typeof a[remove]) {
+				return a[remove]();
 			} else {
-				return elem[parentNode] && elem[parentNode][removeChild](elem);
+				return a[parentNode] && a[parentNode][removeChild](a);
 			}
 		}
 	};
@@ -457,24 +457,24 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	var supportsSvgAsImg = document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Image", "1.1") || "";
 
 	if (!supportsSvgAsImg) {
-		var svgNosmilImages = document[getElementsByClassName]("svg-nosmil-img") || "";
-		if (svgNosmilImages) {
+		var svgNosmilImgAll = document[getElementsByClassName]("svg-nosmil-img") || "";
+		if (svgNosmilImgAll) {
 			var i,
 			l;
-			for (i = 0, l = svgNosmilImages[_length]; i < l; i += 1) {
-				svgNosmilImages[i][src] = svgNosmilImages[i][getAttribute]("data-fallback-src");
+			for (i = 0, l = svgNosmilImgAll[_length]; i < l; i += 1) {
+				svgNosmilImgAll[i][src] = svgNosmilImgAll[i][getAttribute]("data-fallback-src");
 			}
 			i = l = null;
 		}
 	}
 
 	if (!supportsSvgSmilAnimation) {
-		var svgSmilImages = document[getElementsByClassName]("svg-smil-img") || "";
-		if (svgSmilImages) {
+		var svgSmilImgAll = document[getElementsByClassName]("svg-smil-img") || "";
+		if (svgSmilImgAll) {
 			var j,
 			m;
-			for (j = 0, m = svgSmilImages[_length]; j < m; j += 1) {
-				svgSmilImages[j][src] = svgSmilImages[j][getAttribute]("data-fallback-src");
+			for (j = 0, m = svgSmilImgAll[_length]; j < m; j += 1) {
+				svgSmilImgAll[j][src] = svgSmilImgAll[j][getAttribute]("data-fallback-src");
 			}
 			j = m = null;
 		}
@@ -558,9 +558,9 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 
 		var isActiveClass = "is-active";
 
-		var documentTitle = document[title] || "";
-		var locationHref = root.location[href] || "";
-		var navigatorUserAgent = navigator.userAgent || "";
+		var docTitle = document[title] || "";
+		var locHref = root.location[href] || "";
+		var navUA = navigator.userAgent || "";
 
 		if (!supportsSvgSmilAnimation) {
 			progressBar.increase(20);
@@ -586,15 +586,15 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			return newYear + "-" + newMonth + "-" + newDay;
 		})();
 
-		var platformName = "";
-		var platformDescription = "";
-		if (root.platform && navigatorUserAgent) {
-			platformName = platform.name || "";
-			platformDescription = platform.description || "";
-			document[title] = documentTitle +
+		var brName = "";
+		var brDescription = "";
+		if (root.platform && navUA) {
+			brName = platform.name || "";
+			brDescription = platform.description || "";
+			document[title] = docTitle +
 			" [" +
 			(getHumanDate ? " " + getHumanDate : "") +
-			(platformDescription ? " " + platformDescription : "") +
+			(brDescription ? " " + brDescription : "") +
 			((hasTouch || hasWheel) ? " with" : "") +
 			(hasTouch ? " touch" : "") +
 			((hasTouch && hasWheel) ? "," : "") +
@@ -721,8 +721,8 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			} else if (isNwjs) {
 				onNwjs();
 			} else {
-				var locationProtocol = root.location.protocol || "",
-				hasHTTP = locationProtocol ? "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : "" : "";
+				var locProtocol = root.location.protocol || "",
+				hasHTTP = locProtocol ? "http:" === locProtocol ? "http" : "https:" === locProtocol ? "https" : "" : "";
 				if (hasHTTP) {
 					return true;
 				} else {
@@ -733,7 +733,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 
 		var manageExternalLinkAll = function () {
 			var link = document[getElementsByTagName]("a") || "";
-			var handleExternalLink = function (url, ev) {
+			var handle = function (url, ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
@@ -751,7 +751,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 							e.target = "_blank";
 							e.rel = "noopener";
 						} else {
-							e[_addEventListener]("click", handleExternalLink.bind(null, url));
+							e[_addEventListener]("click", handle.bind(null, url));
 						}
 						e[classList].add(externalLinkIsBindedClass);
 					}
@@ -783,12 +783,12 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			};
 			if (qrcode) {
 				var img = document[createElement]("img");
-				var imgTitle = documentTitle ? ("Ссылка на страницу «" + documentTitle.replace(/\[[^\]]*?\]/g, "").trim() + "»") : "";
-				var imgSrc = forcedHTTP + "://chart.googleapis.com/chart?cht=qr&chld=M%7C4&choe=UTF-8&chs=512x512&chl=" + encodeURIComponent(locationHref);
+				var imgTitle = docTitle ? ("Ссылка на страницу «" + docTitle.replace(/\[[^\]]*?\]/g, "").trim() + "»") : "";
+				var imgSrc = forcedHTTP + "://chart.googleapis.com/chart?cht=qr&chld=M%7C4&choe=UTF-8&chs=512x512&chl=" + encodeURIComponent(locHref);
 				img[alt] = imgTitle;
 				if (root.QRCode) {
 					if (supportsSvgAsImg) {
-						imgSrc = QRCode.generateSVG(locationHref, {
+						imgSrc = QRCode.generateSVG(locHref, {
 								ecclevel: "M",
 								fillcolor: "#FFFFFF",
 								textcolor: "#191919",
@@ -800,7 +800,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 						imgSrc = "data:image/svg+xml;base64," + root.btoa(unescape(encodeURIComponent(imgSrc)));
 						img[src] = imgSrc;
 					} else {
-						imgSrc = QRCode.generatePNG(locationHref, {
+						imgSrc = QRCode.generatePNG(locHref, {
 								ecclevel: "M",
 								format: "html",
 								fillcolor: "#FFFFFF",
@@ -831,38 +831,38 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 				downloadApp[style][visibility] = "visible";
 				downloadApp[style][opacity] = 1;
 			};
-			if (root.platform && navigatorUserAgent && downloadApp && link && img) {
-				var platformOsFamily = platform.os.family || "";
-				var platformOsVersion = platform.os.version || "";
-				var platformOsArchitecture = platform.os.architecture || "";
-				/* console.log(navigatorUserAgent);
+			if (root.platform && navUA && downloadApp && link && img) {
+				var osFamily = platform.os.family || "";
+				var osVersion = platform.os.version || "";
+				var osArchitecture = platform.os.architecture || "";
+				/* console.log(navUA);
 				console.log(platform.os);
-				console.log(platformName + "|" + platformOsFamily + "|" + platformOsVersion + "|" + platformOsArchitecture + "|" + platformDescription); */
+				console.log(brName + "|" + osFamily + "|" + osVersion + "|" + osArchitecture + "|" + brDescription); */
 				var imgSrc;
 				var linkHref;
-				if (platformOsFamily.indexOf("Windows Phone", 0) !== -1 && "10.0" === platformOsVersion) {
+				if (osFamily.indexOf("Windows Phone", 0) !== -1 && "10.0" === osVersion) {
 					imgSrc = "./libs/products/img/download_wp_app_144x52.svg";
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_x86_debug.appx";
-				} else if (platformName.indexOf("IE Mobile", 0) !== -1 && ("7.5" === platformOsVersion || "8.0" === platformOsVersion || "8.1" === platformOsVersion)) {
+				} else if (brName.indexOf("IE Mobile", 0) !== -1 && ("7.5" === osVersion || "8.0" === osVersion || "8.1" === osVersion)) {
 					imgSrc = "./libs/products/img/download_wp_app_144x52.svg";
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra_app-debug.xap";
-				} else if (platformOsFamily.indexOf("Windows", 0) !== -1 && 64 === platformOsArchitecture) {
+				} else if (osFamily.indexOf("Windows", 0) !== -1 && 64 === osArchitecture) {
 					imgSrc = "./libs/products/img/download_windows_app_144x52.svg";
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-win32-x64-setup.exe";
-				} else if (platformOsFamily.indexOf("Windows", 0) !== -1 && 32 === platformOsArchitecture) {
+				} else if (osFamily.indexOf("Windows", 0) !== -1 && 32 === osArchitecture) {
 					imgSrc = "./libs/products/img/download_windows_app_144x52.svg";
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-win32-ia32-setup.exe";
-				} else if (navigatorUserAgent.indexOf("armv7l", 0) !== -1) {
+				} else if (navUA.indexOf("armv7l", 0) !== -1) {
 					imgSrc = "./libs/products/img/download_linux_app_144x52.svg";
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-armv7l.tar.gz";
-				} else if (navigatorUserAgent.indexOf("X11", 0) !== -1 && navigatorUserAgent.indexOf("Linux") !== -1 && 64 === platformOsArchitecture) {
+				} else if (navUA.indexOf("X11", 0) !== -1 && navUA.indexOf("Linux") !== -1 && 64 === osArchitecture) {
 					imgSrc = "./libs/products/img/download_linux_app_144x52.svg";
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-x64.tar.gz";
-				} else if (navigatorUserAgent.indexOf("X11", 0) !== -1 && navigatorUserAgent.indexOf("Linux") !== -1 && 32 === platformOsArchitecture) {
+				} else if (navUA.indexOf("X11", 0) !== -1 && navUA.indexOf("Linux") !== -1 && 32 === osArchitecture) {
 					imgSrc = "./libs/products/img/download_linux_app_144x52.svg";
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-ia32.tar.gz";
 				} else {
-					if (platformOsFamily.indexOf("Android", 0) !== -1) {
+					if (osFamily.indexOf("Android", 0) !== -1) {
 						imgSrc = "./libs/products/img/download_android_app_144x52.svg";
 						linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-debug.apk";
 					}
@@ -918,14 +918,14 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 				hand[classList].remove(bounceInUpClass);
 				hand[classList].add(bounceOutDownClass);
 			}
-			var timerHideStart;
+			var timer;
 			var hideStart = function () {
-				clearTimeout(timerHideStart);
-				timerHideStart = null;
+				clearTimeout(timer);
+				timer = null;
 				setStyleDisplayNone(start);
 				setStyleDisplayNone(hand);
 			};
-			timerHideStart = setTimeout(hideStart, 1000);
+			timer = setTimeout(hideStart, 1000);
 		};
 
 		var mousewheeldown = document[getElementsByClassName]("mousewheeldown")[0] || "";
@@ -980,13 +980,13 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		root[_addEventListener]("click", hideOtherIsSocial);
 
 		var yshare;
-		var manageShareButton = function () {
+		var manageShareButtons = function () {
 			var btn = document[getElementsByClassName]("btn-share-buttons")[0] || "";
 			var yaShare2Id = "ya-share2";
 			var yaShare2 = document[getElementById](yaShare2Id) || "";
-			var locationHref = root.location || "";
-			var documentTitle = document[title] || "";
-			var handleShareButton = function (ev) {
+			var locHref = root.location || "";
+			var docTitle = document[title] || "";
+			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
@@ -996,16 +996,16 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 						try {
 							if (yshare) {
 								yshare.updateContent({
-									title: documentTitle,
-									description: documentTitle,
-									url: locationHref
+									title: docTitle,
+									description: docTitle,
+									url: locHref
 								});
 							} else {
 								yshare = Ya.share2(yaShare2Id, {
 									content: {
-										title: documentTitle,
-										description: documentTitle,
-										url: locationHref
+										title: docTitle,
+										description: docTitle,
+										url: locHref
 									}
 								});
 							}
@@ -1025,13 +1025,13 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			};
 			if (btn && yaShare2) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handleShareButton);
+					btn[_addEventListener]("click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
 			}
 		};
-		manageShareButton();
+		manageShareButtons();
 
 		var vlike;
 		var manageVKLikeButton = function () {
@@ -1039,7 +1039,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			var vkLike = document[getElementById](vkLikeId) || "";
 			var holderVkLike = document[getElementsByClassName]("holder-vk-like")[0] || "";
 			var btn = document[getElementsByClassName]("btn-show-vk-like")[0] || "";
-			var handleVKLikeButton = function (ev) {
+			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
@@ -1075,7 +1075,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			};
 			if (btn && vkLike) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handleVKLikeButton);
+					btn[_addEventListener]("click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
@@ -1131,9 +1131,10 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	scripts.push("./libs/noushevr-homepage/js/vendors.min.js");
 
 	var bodyFontFamily = "Roboto";
-	var onFontsLoadedCallback = function () {
+
+	var onFontsLoaded = function () {
 		var slot;
-		var onFontsLoaded = function () {
+		var init = function () {
 			clearInterval(slot);
 			slot = null;
 			if (!supportsSvgSmilAnimation && "undefined" !== typeof progressBar) {
@@ -1142,21 +1143,21 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			var load;
 			load = new loadJsCss(scripts, run);
 		};
-		var checkFontIsLoaded;
-		checkFontIsLoaded = function () {
+		var check;
+		check = function () {
 			if (doesFontExist(bodyFontFamily)) {
-				onFontsLoaded();
+				init();
 			}
 		};
 		/* if (supportsCanvas) {
-			slot = setInterval(checkFontIsLoaded, 100);
+			slot = setInterval(check, 100);
 		} else {
 			slot = null;
-			onFontsLoaded();
+			init();
 		} */
-		onFontsLoaded();
+		init();
 	};
 
 	var load;
-	load = new loadJsCss(["./libs/noushevr-homepage/css/bundle.min.css"], onFontsLoadedCallback);
+	load = new loadJsCss(["./libs/noushevr-homepage/css/bundle.min.css"], onFontsLoaded);
 })("undefined" !== typeof window ? window : this, document);

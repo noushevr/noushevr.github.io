@@ -407,8 +407,8 @@ ToProgress, unescape, verge, VK, Ya*/
 
 	var getHTTP = function(force) {
 		var any = force || "";
-		var locationProtocol = root.location.protocol || "";
-		return "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : any ? "http" : "";
+		var locProtocol = root.location.protocol || "";
+		return "http:" === locProtocol ? "http" : "https:" === locProtocol ? "https" : any ? "http" : "";
 	};
 
 	var forcedHTTP = getHTTP(true);
@@ -437,6 +437,9 @@ ToProgress, unescape, verge, VK, Ya*/
 		var style = "style";
 		var title = "title";
 		var _removeEventListener = "removeEventListener";
+
+		var isActiveClass = "is-active";
+		var isBindedClass = "is-binded";
 
 		progressBar.increase(20);
 
@@ -561,10 +564,10 @@ ToProgress, unescape, verge, VK, Ya*/
 			return newYear + "-" + newMonth + "-" + newDay;
 		})();
 
-		var userBrowsingDetails = " [" + (getHumanDate ? getHumanDate : "") + (earlyDeviceType ? " " + earlyDeviceType : "") + (earlyDeviceFormfactor.orientation ? " " + earlyDeviceFormfactor.orientation : "") + (earlyDeviceFormfactor.size ? " " + earlyDeviceFormfactor.size : "") + (earlySvgSupport ? " " + earlySvgSupport : "") + (earlySvgasimgSupport ? " " + earlySvgasimgSupport : "") + (earlyHasTouch ? " " + earlyHasTouch : "") + "]";
+		var userBrowser = " [" + (getHumanDate ? getHumanDate : "") + (earlyDeviceType ? " " + earlyDeviceType : "") + (earlyDeviceFormfactor.orientation ? " " + earlyDeviceFormfactor.orientation : "") + (earlyDeviceFormfactor.size ? " " + earlyDeviceFormfactor.size : "") + (earlySvgSupport ? " " + earlySvgSupport : "") + (earlySvgasimgSupport ? " " + earlySvgasimgSupport : "") + (earlyHasTouch ? " " + earlyHasTouch : "") + "]";
 
 		if (document[title]) {
-			document[title] = document[title] + userBrowsingDetails;
+			document[title] = document[title] + userBrowser;
 		}
 
 		var loadUnparsedJSON = function (url, callback, onerror) {
@@ -625,15 +628,15 @@ ToProgress, unescape, verge, VK, Ya*/
 			return c;
 		};
 
-		var removeElement = function (elem) {
-			if (elem) {
-				if ("undefined" !== typeof elem[remove]) {
-					return elem[remove]();
-				} else {
-					return elem[parentNode] && elem[parentNode][removeChild](elem);
-				}
+	var removeElement = function (a) {
+		if (a) {
+			if ("undefined" !== typeof a[remove]) {
+				return a[remove]();
+			} else {
+				return a[parentNode] && a[parentNode][removeChild](a);
 			}
-		};
+		}
+	};
 
 		var removeChildren = function (e) {
 			if (e && e.firstChild) {
@@ -774,8 +777,8 @@ ToProgress, unescape, verge, VK, Ya*/
 			} else if (isNwjs) {
 				onNwjs();
 			} else {
-				var locationProtocol = root.location.protocol || "",
-				hasHTTP = locationProtocol ? "http:" === locationProtocol ? "http" : "https:" === locationProtocol ? "https" : "" : "";
+				var locProtocol = root.location.protocol || "",
+				hasHTTP = locProtocol ? "http:" === locProtocol ? "http" : "https:" === locProtocol ? "https" : "" : "";
 				if (hasHTTP) {
 					return true;
 				} else {
@@ -912,7 +915,7 @@ ToProgress, unescape, verge, VK, Ya*/
 
 		var manageExternalLinkAll = function () {
 			var link = document[getElementsByTagName]("a") || "";
-			var handleExternalLink = function (url, ev) {
+			var handle = function (url, ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
@@ -930,7 +933,7 @@ ToProgress, unescape, verge, VK, Ya*/
 							e.target = "_blank";
 							e.rel = "noopener";
 						} else {
-							e[_addEventListener]("click", handleExternalLink.bind(null, url));
+							e[_addEventListener]("click", handle.bind(null, url));
 						}
 						e[classList].add(externalLinkIsBindedClass);
 					}
@@ -1230,7 +1233,7 @@ ToProgress, unescape, verge, VK, Ya*/
 		};
 		manageIframeLightbox(iframeLightboxLinkClass);
 
-		var handleChaptersSelect = function () {
+		var handle = function () {
 			var _this = this;
 			var hashString = _this.options[_this.selectedIndex].value || "";
 			if (hashString) {
@@ -1245,14 +1248,14 @@ ToProgress, unescape, verge, VK, Ya*/
 		var manageChaptersSelect = function () {
 			var chaptersSelect = document[getElementById]("chapters-select") || "";
 			if (chaptersSelect) {
-				chaptersSelect[_addEventListener]("change", handleChaptersSelect);
+				chaptersSelect[_addEventListener]("change", handle);
 			}
 		};
 		manageChaptersSelect();
 
 		var manageSearchInput = function () {
 			var searchInput = document[getElementById]("text") || "";
-			var handleSearchInputValue = function () {
+			var handle = function () {
 				var _this = this;
 				var logic = function () {
 					_this.value = _this.value.replace(/\\/g, "").replace(/ +(?= )/g, " ").replace(/\/+(?=\/)/g, "/") || "";
@@ -1261,24 +1264,24 @@ ToProgress, unescape, verge, VK, Ya*/
 			};
 			if (searchInput) {
 				searchInput.focus();
-				searchInput[_addEventListener]("input", handleSearchInputValue);
+				searchInput[_addEventListener]("input", handle);
 			}
 		};
 		manageSearchInput();
 
-		var handleExpandingLayerAll = function () {
-			var _this = this;
-			var layer = _this[parentNode] ? _this[parentNode].nextElementSibling : "";
-			if (layer) {
-				_this[classList].toggle(isActiveClass);
-				layer[classList].toggle(isActiveClass);
-			}
-			return;
-		};
-		var manageExpandingLayers = function () {
+		var manageExpandingLayerAll = function () {
 			var btn = document[getElementsByClassName]("btn-expand-hidden-layer") || "";
+			var handle = function () {
+				var _this = this;
+				var layer = _this[parentNode] ? _this[parentNode].nextElementSibling : "";
+				if (layer) {
+					_this[classList].toggle(isActiveClass);
+					layer[classList].toggle(isActiveClass);
+				}
+				return;
+			};
 			var addHandler = function (e) {
-				e[_addEventListener]("click", handleExpandingLayerAll);
+				e[_addEventListener]("click", handle);
 			};
 			if (btn) {
 				var i,
@@ -1289,23 +1292,23 @@ ToProgress, unescape, verge, VK, Ya*/
 				i = l = null;
 			}
 		};
-		manageExpandingLayers();
+		manageExpandingLayerAll();
 
 		var qcode;
 		var manageLocationQrcode = function () {
 			var holder = document[getElementsByClassName]("holder-location-qrcode")[0] || "";
-			var locationHref = root.location.href || "";
+			var locHref = root.location.href || "";
 			var initScript = function () {
 				if (!qcode) {
 					qcode = true;
-					var locationHref = root.location.href || "";
+					var locHref = root.location.href || "";
 					var img = document[createElement]("img");
 					var imgTitle = document.title ? ("Ссылка на страницу «" + document.title.replace(/\[[^\]]*?\]/g, "").trim() + "»") : "";
-					var imgSrc = forcedHTTP + "://chart.googleapis.com/chart?cht=qr&chld=M%7C4&choe=UTF-8&chs=512x512&chl=" + encodeURIComponent(locationHref);
+					var imgSrc = forcedHTTP + "://chart.googleapis.com/chart?cht=qr&chld=M%7C4&choe=UTF-8&chs=512x512&chl=" + encodeURIComponent(locHref);
 					img.alt = imgTitle;
 					if (root.QRCode) {
 						if ("undefined" !== typeof earlySvgSupport && "svg" === earlySvgSupport) {
-							imgSrc = QRCode.generateSVG(locationHref, {
+							imgSrc = QRCode.generateSVG(locHref, {
 									ecclevel: "M",
 									fillcolor: "#FFFFFF",
 									textcolor: "#191919",
@@ -1317,7 +1320,7 @@ ToProgress, unescape, verge, VK, Ya*/
 							imgSrc = "data:image/svg+xml;base64," + root.btoa(unescape(encodeURIComponent(imgSrc)));
 							img.src = imgSrc;
 						} else {
-							imgSrc = QRCode.generatePNG(locationHref, {
+							imgSrc = QRCode.generatePNG(locHref, {
 									ecclevel: "M",
 									format: "html",
 									fillcolor: "#FFFFFF",
@@ -1336,7 +1339,7 @@ ToProgress, unescape, verge, VK, Ya*/
 					appendFragment(img, holder);
 				}
 			};
-			if (root.QRCode && holder && locationHref && "undefined" !== typeof getHTTP && getHTTP()) {
+			if (root.QRCode && holder && locHref && "undefined" !== typeof getHTTP && getHTTP()) {
 				initScript();
 			}
 		};
@@ -1349,7 +1352,7 @@ ToProgress, unescape, verge, VK, Ya*/
 			var panelNavMenu = document[getElementsByClassName]("panel-nav-menu")[0] || "";
 			var panelNavMenuItems = panelNavMenu ? panelNavMenu[getElementsByTagName]("a") || "" : "";
 			var holderPanelMenuMore = document[getElementsByClassName]("holder-panel-menu-more")[0] || "";
-			var locationHref = root.location.href || "";
+			var locHref = root.location.href || "";
 			var removeAllActiveClass = function () {
 				page[classList].remove(isActiveClass);
 				panelNavMenu[classList].remove(isActiveClass);
@@ -1425,7 +1428,7 @@ ToProgress, unescape, verge, VK, Ya*/
 						addActiveClass(e);
 					};
 					e[_addEventListener]("click", handleItem);
-					if (locationHref === e.href) {
+					if (locHref === e.href) {
 						addActiveClass(e);
 					} else {
 						removeActiveClass(e);
@@ -1450,23 +1453,22 @@ ToProgress, unescape, verge, VK, Ya*/
 		addUpdateAppLink = function () {
 			var panel = document[getElementsByClassName]("panel-menu-more")[0] || "";
 			var items = panel ? panel[getElementsByTagName]("li") || "" : "";
-			var navigatorUserAgent = navigator.userAgent || "";
+			var navUA = navigator.userAgent || "";
 			var linkHref;
-			if (/Windows/i.test(navigatorUserAgent) && /(WOW64|Win64)/i.test(navigatorUserAgent)) {
+			if (/Windows/i.test(navUA) && /(WOW64|Win64)/i.test(navUA)) {
 				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-win32-x64-setup.exe";
-			} else if (/(x86_64|x86-64|x64;|amd64|AMD64|x64_64)/i.test(navigatorUserAgent) && /(Linux|X11)/i.test(navigatorUserAgent)) {
+			} else if (/(x86_64|x86-64|x64;|amd64|AMD64|x64_64)/i.test(navUA) && /(Linux|X11)/i.test(navUA)) {
 				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-x64.tar.gz";
-			} else if (/IEMobile/i.test(navigatorUserAgent)) {
+			} else if (/IEMobile/i.test(navUA)) {
 				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_x86_debug.appx";
 			} else {
-				if (/Android/i.test(navigatorUserAgent)) {
+				if (/Android/i.test(navUA)) {
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-debug.apk";
 				}
 			}
 			var arrange = function () {
 				var listItem = document[createElement]("li");
 				var link = document[createElement]("a");
-				var linkText = "Скачать приложение сайта";
 				link.title = "" + (parseLink(linkHref).hostname || "") + " откроется в новой вкладке";
 				link.href = linkHref;
 				var handleAppUpdatesLink = function () {
@@ -1481,7 +1483,7 @@ ToProgress, unescape, verge, VK, Ya*/
 					/* jshint +W107 */
 					link[_addEventListener]("click", handleAppUpdatesLink);
 				}
-				link[appendChild](document[createTextNode]("" + linkText));
+				link[appendChild](document[createTextNode]("Скачать приложение сайта"));
 				listItem[appendChild](link);
 				if (panel.hasChildNodes()) {
 					prependFragmentBefore(listItem, panel.firstChild);
@@ -1555,13 +1557,13 @@ ToProgress, unescape, verge, VK, Ya*/
 		root[_addEventListener]("click", hideOtherIsSocial);
 
 		var yshare;
-		var manageShareButton = function () {
+		var manageShareButtons = function () {
 			var btn = document[getElementsByClassName]("btn-share-buttons")[0] || "";
 			var yaShare2Id = "ya-share2";
 			var yaShare2 = document[getElementById](yaShare2Id) || "";
-			var locationHref = root.location || "";
-			var documentTitle = document[title] || "";
-			var handleShareButton = function (ev) {
+			var locHref = root.location || "";
+			var docTitle = document[title] || "";
+			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
@@ -1571,16 +1573,16 @@ ToProgress, unescape, verge, VK, Ya*/
 						try {
 							if (yshare) {
 								yshare.updateContent({
-									title: documentTitle,
-									description: documentTitle,
-									url: locationHref
+									title: docTitle,
+									description: docTitle,
+									url: locHref
 								});
 							} else {
 								yshare = Ya.share2(yaShare2Id, {
 									content: {
-										title: documentTitle,
-										description: documentTitle,
-										url: locationHref
+										title: docTitle,
+										description: docTitle,
+										url: locHref
 									}
 								});
 							}
@@ -1600,13 +1602,13 @@ ToProgress, unescape, verge, VK, Ya*/
 			};
 			if (btn && yaShare2) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handleShareButton);
+					btn[_addEventListener]("click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
 			}
 		};
-		manageShareButton();
+		manageShareButtons();
 
 		var vlike;
 		var manageVKLikeButton = function () {
@@ -1614,7 +1616,7 @@ ToProgress, unescape, verge, VK, Ya*/
 			var vkLike = document[getElementById](vkLikeId) || "";
 			var holderVkLike = document[getElementsByClassName]("holder-vk-like")[0] || "";
 			var btn = document[getElementsByClassName]("btn-show-vk-like")[0] || "";
-			var handleVKLikeButton = function (ev) {
+			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
@@ -1650,7 +1652,7 @@ ToProgress, unescape, verge, VK, Ya*/
 			};
 			if (btn && vkLike) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handleVKLikeButton);
+					btn[_addEventListener]("click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
@@ -1660,24 +1662,24 @@ ToProgress, unescape, verge, VK, Ya*/
 
 		var manageDownloadAppBtn;
 		manageDownloadAppBtn = function () {
-			var navigatorUserAgent = navigator.userAgent || "";
+			var navUA = navigator.userAgent || "";
 			var cls = "btn-download-app";
 			var an = "animated";
 			var an2 = "bounceInRight";
 			var an4 = "bounceOutRight";
 			var bgUrl;
 			var linkHref;
-			if (/Windows/i.test(navigatorUserAgent) && /(WOW64|Win64)/i.test(navigatorUserAgent)) {
+			if (/Windows/i.test(navUA) && /(WOW64|Win64)/i.test(navUA)) {
 				bgUrl = "url(../../libs/products/img/download_windows_app_144x52.png)";
 				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-win32-x64-setup.exe";
-			} else if (/(x86_64|x86-64|x64;|amd64|AMD64|x64_64)/i.test(navigatorUserAgent) && /(Linux|X11)/i.test(navigatorUserAgent)) {
+			} else if (/(x86_64|x86-64|x64;|amd64|AMD64|x64_64)/i.test(navUA) && /(Linux|X11)/i.test(navUA)) {
 				bgUrl = "url(../../libs/products/img/download_linux_app_144x52.png)";
 				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-linux-x64.tar.gz";
-			} else if (/IEMobile/i.test(navigatorUserAgent)) {
+			} else if (/IEMobile/i.test(navUA)) {
 				bgUrl = "url(../../libs/products/img/download_wp_app_144x52.png)";
 				linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra.Windows10_x86_debug.appx";
 			} else {
-				if (/Android/i.test(navigatorUserAgent)) {
+				if (/Android/i.test(navUA)) {
 					bgUrl = "url(../../libs/products/img/download_android_app_144x52.png)";
 					linkHref = "https://github.com/englishextra/englishextra-app/releases/download/v1.0.0/englishextra-debug.apk";
 				}
@@ -1714,7 +1716,7 @@ ToProgress, unescape, verge, VK, Ya*/
 					}, 750);
 				}, 8000);
 			};
-			if (docBody && navigatorUserAgent && linkHref) {
+			if (docBody && navUA && linkHref) {
 				var timer = setTimeout(function () {
 					clearTimeout(timer);
 					timer = null;
@@ -1728,8 +1730,8 @@ ToProgress, unescape, verge, VK, Ya*/
 		var manageDisqusOnScroll = function () {
 			var disqusThread = document[getElementById]("disqus_thread") || "";
 			var btn = document[getElementsByClassName]("btn-show-disqus")[0] || "";
-			var locationHref = root.location.href || "";
-			var disqusThreadShortname = disqusThread ? (disqusThread[dataset].shortname || "") : "";
+			var locHref = root.location.href || "";
+			var shortname = disqusThread ? (disqusThread[dataset].shortname || "") : "";
 			var loadDisqus = function () {
 				var initScript = function () {
 					if (!disqs) {
@@ -1739,7 +1741,7 @@ ToProgress, unescape, verge, VK, Ya*/
 					}
 				};
 				if (!root.DISQUS) {
-					var jsUrl = forcedHTTP + "://" + disqusThreadShortname + ".disqus.com/embed.js";
+					var jsUrl = forcedHTTP + "://" + shortname + ".disqus.com/embed.js";
 					var load;
 					load = new loadJsCss([jsUrl], initScript);
 				} else {
@@ -1755,7 +1757,7 @@ ToProgress, unescape, verge, VK, Ya*/
 				};
 				btn[_addEventListener]("click", handleDisqusButton);
 			};
-			if (btn && disqusThread && disqusThreadShortname && locationHref) {
+			if (btn && disqusThread && shortname && locHref) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
 					addHandler();
 				} else {
@@ -1895,7 +1897,7 @@ ToProgress, unescape, verge, VK, Ya*/
 		manageKamil();
 
 		var manageBtnTotop = function () {
-			var btnClass = "ui-totop";
+			var btnClass = "btn-totop";
 			var btn = document[getElementsByClassName](btnClass)[0] || "";
 			if (!btn) {
 				btn = document[createElement]("a");
@@ -1906,12 +1908,12 @@ ToProgress, unescape, verge, VK, Ya*/
 				btn.title = "Наверх";
 				docBody[appendChild](btn);
 			}
-			var handleUiTotop = function (ev) {
+			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				scroll2Top(0, 20000);
 			};
-			var handleUiTotopWindow = function (_this) {
+			var handleWindow = function (_this) {
 				var logic = function () {
 					var scrollPosition = _this.pageYOffset || docElem.scrollTop || docBody.scrollTop || "";
 					var windowHeight = _this.innerHeight || docElem.clientHeight || docBody.clientHeight || "";
@@ -1926,8 +1928,8 @@ ToProgress, unescape, verge, VK, Ya*/
 				throttle(logic, 100).call(root);
 			};
 			if (docBody) {
-				btn[_addEventListener]("click", handleUiTotop);
-				root[_addEventListener]("scroll", handleUiTotopWindow, {passive: true});
+				btn[_addEventListener]("click", handle);
+				root[_addEventListener]("scroll", handleWindow, {passive: true});
 			}
 		};
 		manageBtnTotop();
@@ -1982,9 +1984,10 @@ ToProgress, unescape, verge, VK, Ya*/
 	scripts.push("../../libs/noushevr-paper/js/vendors.min.js");
 
 	var bodyFontFamily = "Roboto";
-	var onFontsLoadedCallback = function () {
+
+	var onFontsLoaded = function () {
 		var slot;
-		var onFontsLoaded = function () {
+		var init = function () {
 			clearInterval(slot);
 			slot = null;
 			if (!supportsSvgSmilAnimation && "undefined" !== typeof progressBar) {
@@ -1993,21 +1996,21 @@ ToProgress, unescape, verge, VK, Ya*/
 			var load;
 			load = new loadJsCss(scripts, run);
 		};
-		var checkFontIsLoaded;
-		checkFontIsLoaded = function () {
+		var check;
+		check = function () {
 			if (doesFontExist(bodyFontFamily)) {
-				onFontsLoaded();
+				init();
 			}
 		};
 		/* if (supportsCanvas) {
-			slot = setInterval(checkFontIsLoaded, 100);
+			slot = setInterval(check, 100);
 		} else {
 			slot = null;
-			onFontsLoaded();
+			init();
 		} */
-		onFontsLoaded();
+		init();
 	};
 
 	var load;
-	load = new loadJsCss(["../../libs/noushevr-paper/css/bundle.min.css"], onFontsLoadedCallback);
+	load = new loadJsCss(["../../libs/noushevr-paper/css/bundle.min.css"], onFontsLoaded);
 })("undefined" !== typeof window ? window : this, document);

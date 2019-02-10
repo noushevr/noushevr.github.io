@@ -1,7 +1,8 @@
 /*jslint browser: true */
 /*jslint node: true */
-/*global doesFontExist, loadJsCss, Parallax, platform, QRCode,
-ToProgress, unescape, VK, WheelIndicator, Ya*/
+/*global doesFontExist, loadJsCss, addListener, getByClass, addClass, hasClass,
+removeClass, toggleClass, Parallax, platform, QRCode, ToProgress, unescape,
+VK, WheelIndicator, Ya*/
 /*property console, join, split */
 /*!
  * safe way to handle console.log
@@ -34,6 +35,98 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	prop = method = dummy = properties = methods = null;
 })("undefined" !== typeof window ? window : this);
 /*!
+ * Super-simple wrapper around addEventListener and attachEvent (old IE).
+ * Does not handle differences in the Event-objects.
+ * @see {@link https://github.com/finn-no/eventlistener}
+ */
+(function (root) {
+	"use strict";
+	var wrap = function (standard, fallback) {
+		return function (el, type, listener, useCapture) {
+			if (el[standard]) {
+				el[standard](type, listener, useCapture);
+			} else {
+				if (el[fallback]) {
+					el[fallback]("on" + type, listener);
+				}
+			}
+		};
+	};
+	root.addListener = wrap("addEventListener", "attachEvent");
+	root.removeListener = wrap("removeEventListener", "detachEvent");
+})("undefined" !== typeof window ? window : this);
+/*!
+ * get elements by class name wrapper
+ */
+(function (root, document) {
+	"use strict";
+	var getByClass = function (parent, name) {
+		if (!Element.getElementsByClassName) {
+			var children = (parent || document.body).getElementsByTagName("*"),
+			elements = [],
+			classRE = new RegExp("\\b" + name + "\\b"),
+			child;
+			var i,
+			l;
+			for (i = 0, l = children.length; i < l; i += 1) {
+				child = children[i];
+				if (classRE.test(child.className)) {
+					elements.push(child);
+				}
+			}
+			i = l = null;
+			return elements;
+		} else {
+			return parent ? parent.getElementsByClassName(name) : "";
+		}
+	};
+	root.getByClass = getByClass;
+})("undefined" !== typeof window ? window : this, document);
+/*!
+ * class list wrapper
+ */
+(function (root, document) {
+	"use strict";
+	var classList = "classList";
+	var hasClass;
+	var addClass;
+	var removeClass;
+	if (classList in document.documentElement) {
+		hasClass = function (el, name) {
+			return el[classList].contains(name);
+		};
+		addClass = function (el, name) {
+			el[classList].add(name);
+		};
+		removeClass = function (el, name) {
+			el[classList].remove(name);
+		};
+	} else {
+		hasClass = function (el, name) {
+			return new RegExp("\\b" + name + "\\b").test(el.className);
+		};
+		addClass = function (el, name) {
+			if (!hasClass(el, name)) {
+				el.className += " " + name;
+			}
+		};
+		removeClass = function (el, name) {
+			el.className = el.className.replace(new RegExp("\\b" + name + "\\b", "g"), "");
+		};
+	}
+	var toggleClass = function (el, name) {
+		if (hasClass(el, name)) {
+			removeClass(el, name);
+		} else {
+			addClass(el, name);
+		}
+	};
+	root.hasClass = hasClass;
+	root.addClass = addClass;
+	root.removeClass = removeClass;
+	root.toggleClass = toggleClass;
+})("undefined" !== typeof window ? window : this, document);
+/*!
  * modified ToProgress v0.1.1
  * arguments.callee changed to TP, a local wrapper function,
  * so that public function name is now customizable;
@@ -52,7 +145,6 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		var TP = function () {
 			var _addEventListener = "addEventListener";
 			var appendChild = "appendChild";
-			var createElement = "createElement";
 			var firstChild = "firstChild";
 			var getElementById = "getElementById";
 			var getElementsByClassName = "getElementsByClassName";
@@ -63,7 +155,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			var style = "style";
 			function whichTransitionEvent() {
 				var t,
-				el = document[createElement]("fakeelement");
+				el = document.createElement("fakeelement");
 				var transitions = {
 					"transition": "transitionend",
 					"OTransition": "oTransitionEnd",
@@ -99,7 +191,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 					key = null;
 				}
 				this.options.opacityDuration = this.options.duration * 3;
-				this.progressBar = document[createElement]("div");
+				this.progressBar = document.createElement("div");
 				this.progressBar.id = this.options.id;
 				this.progressBar.setCSS = function (style) {
 					var property;
@@ -212,11 +304,10 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 (function (root, document) {
 	"use strict";
 	var doesFontExist = function (fontName) {
-		var createElement = "createElement";
 		var getContext = "getContext";
 		var measureText = "measureText";
 		var width = "width";
-		var canvas = document[createElement]("canvas");
+		var canvas = document.createElement("canvas");
 		var context = canvas[getContext]("2d");
 		var text = "abcdefghijklmnopqrstuvwxyz0123456789";
 		context.font = "72px monospace";
@@ -243,7 +334,6 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		var _this = this;
 		var appendChild = "appendChild";
 		var body = "body";
-		var createElement = "createElement";
 		var getElementsByTagName = "getElementsByTagName";
 		var setAttribute = "setAttribute";
 		var _length = "length";
@@ -255,7 +345,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		_this.callback = callback || function () {};
 		_this.type = type ? type.toLowerCase() : "";
 		_this.loadStyle = function (file) {
-			var link = document[createElement]("link");
+			var link = document.createElement("link");
 			link.rel = "stylesheet";
 			link.type = "text/css";
 			link.href = file;
@@ -269,7 +359,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			(_this.body || _this.head)[appendChild](link);
 		};
 		_this.loadScript = function (i) {
-			var script = document[createElement]("script");
+			var script = document.createElement("script");
 			script.type = "text/javascript";
 			script.async = true;
 			script.src = _this.js[i];
@@ -319,26 +409,17 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	var docElem = document.documentElement || "";
 
 	var alt = "alt";
-	var classList = "classList";
 	var className = "className";
-	var createElement = "createElement";
-	var createElementNS = "createElementNS";
-	var defineProperty = "defineProperty";
 	var getAttribute = "getAttribute";
-	var getElementsByClassName = "getElementsByClassName";
 	var getElementsByTagName = "getElementsByTagName";
-	var getOwnPropertyDescriptor = "getOwnPropertyDescriptor";
 	var height = "height";
 	var parentNode = "parentNode";
-	var querySelector = "querySelector";
-	var querySelectorAll = "querySelectorAll";
 	var remove = "remove";
 	var removeChild = "removeChild";
 	var src = "src";
 	var style = "style";
 	var styleSheets = "styleSheets";
 	var width = "width";
-	var _addEventListener = "addEventListener";
 	var _length = "length";
 
 	var progressBar = new ToProgress({
@@ -355,17 +436,18 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	};
 
 	var toStringFn = {}.toString;
-	var supportsSvgSmilAnimation = !!document[createElementNS] && (/SVGAnimate/).test(toStringFn.call(document[createElementNS]("http://www.w3.org/2000/svg", "animate"))) || "";
+	var supportsSvgSmilAnimation = !!document.createElementNS &&
+		(/SVGAnimate/).test(toStringFn.call(document.createElementNS("http://www.w3.org/2000/svg", "animate"))) || "";
 
 	if (supportsSvgSmilAnimation && docElem) {
-		docElem[classList].add("svganimate");
+		addClass(docElem, "svganimate");
 	}
 
 	var hasTouch = "ontouchstart" in docElem || "";
 
-	var hasWheel = "onwheel" in document[createElement]("div") || void 0 !== document.onmousewheel || "";
+	var hasWheel = "onwheel" in document.createElement("div") || void 0 !== document.onmousewheel || "";
 
-	var getHTTP = function(force) {
+	var getHTTP = function (force) {
 		var any = force || "";
 		var locProtocol = root.location.protocol || "";
 		return "http:" === locProtocol ? "http" : "https:" === locProtocol ? "https" : any ? "http" : "";
@@ -375,7 +457,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 
 	var supportsCanvas;
 	supportsCanvas = (function () {
-		var elem = document[createElement]("canvas");
+		var elem = document.createElement("canvas");
 		return !!(elem.getContext && elem.getContext("2d"));
 	})();
 
@@ -383,7 +465,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 
 		progressBar.increase(20);
 
-		root[_addEventListener]("load", hideProgressBar);
+		addListener(root, "load", hideProgressBar);
 	}
 
 	var removeElement = function (a) {
@@ -408,7 +490,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			}
 		};
 
-	var ripple = document[getElementsByClassName]("ripple")[0] || "";
+	var ripple = getByClass(document, "ripple")[0] || "";
 
 	var removeRipple = function () {
 		removeElement(ripple);
@@ -421,7 +503,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		removeRipple();
 	};
 
-	var loading = document[getElementsByClassName]("loading")[0] || "";
+	var loading = getByClass(document, "loading")[0] || "";
 
 	var removeLoading = function () {
 		removeElement(loading);
@@ -451,13 +533,13 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		removeRipple();
 		removeLoading();
 	} else {
-		root[_addEventListener]("load", hidePreloaders);
+		addListener(root, "load", hidePreloaders);
 	}
 
 	var supportsSvgAsImg = document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Image", "1.1") || "";
 
 	if (!supportsSvgAsImg) {
-		var svgNosmilImgAll = document[getElementsByClassName]("svg-nosmil-img") || "";
+		var svgNosmilImgAll = getByClass(document, "svg-nosmil-img") || "";
 		if (svgNosmilImgAll) {
 			var i,
 			l;
@@ -469,7 +551,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	}
 
 	if (!supportsSvgSmilAnimation) {
-		var svgSmilImgAll = document[getElementsByClassName]("svg-smil-img") || "";
+		var svgSmilImgAll = getByClass(document, "svg-smil-img") || "";
 		if (svgSmilImgAll) {
 			var j,
 			m;
@@ -485,7 +567,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			return;
 		}
 		var img = new Image();
-		img[_addEventListener]("load", function () {
+		addListener(img, "load", function () {
 			var ctx = canvasObj.getContext("2d");
 			if (ctx) {
 				ctx.drawImage(img, 0, 0, canvasObj[width], canvasObj[height]);
@@ -498,7 +580,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		if (!canvasObj || !url) {
 			return;
 		}
-		var img = document[createElement]("img");
+		var img = document.createElement("img");
 		img[src] = url;
 		img[alt] = "";
 		img[className] = canvasObj[className].split(" ").join(" ");
@@ -557,6 +639,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		var bounceOutDownClass = "bounceOutDown";
 
 		var isActiveClass = "is-active";
+		var isSocialClass = "is-social";
 
 		var docTitle = document[title] || "";
 		var locHref = root.location[href] || "";
@@ -566,9 +649,9 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			progressBar.increase(20);
 		}
 
-		if (docElem && docElem[classList]) {
-			docElem[classList].remove("no-js");
-			docElem[classList].add("js");
+		if (docElem && docElem.classList) {
+			removeClass(docElem, "no-js");
+			addClass(docElem, "js");
 		}
 
 		var getHumanDate = (function () {
@@ -647,26 +730,36 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 				var _isAbsolute = (0 === url.indexOf("//") || !!~url.indexOf("://"));
 				var _locationHref = root.location || "";
 				var _origin = function () {
-					var o = _locationHref.protocol + "//" + _locationHref.hostname + (_locationHref.port ? ":" + _locationHref.port : "");
+					var o = _locationHref.protocol +
+						"//" +
+						_locationHref.hostname +
+						(_locationHref.port ? ":" + _locationHref.port : "");
 					return o || "";
 				};
 				var _isCrossDomain = function () {
-					var c = document[createElement]("a");
+					var c = document.createElement("a");
 					c.href = url;
 					var v = c.protocol + "//" + c.hostname + (c.port ? ":" + c.port : "");
 					return v !== _origin();
 				};
-				var _link = document[createElement]("a");
+				var _link = document.createElement("a");
 				_link.href = url;
 				return {
 					href: _link.href,
 					origin: _origin(),
 					host: _link.host || _location.host,
-					port: ("0" === _link.port || "" === _link.port) ? _protocol(_link.protocol) : (_full ? _link.port : _replace(_link.port)),
+					port: ("0" === _link.port || "" === _link.port) ?
+						_protocol(_link.protocol) :
+						(_full ? _link.port : _replace(_link.port)),
 					hash: _full ? _link.hash : _replace(_link.hash),
 					hostname: _link.hostname || _location.hostname,
-					pathname: _link.pathname.charAt(0) !== "/" ? (_full ? "/" + _link.pathname : _link.pathname) : (_full ? _link.pathname : _link.pathname.slice(1)),
-					protocol: !_link.protocol || ":" === _link.protocol ? (_full ? _location.protocol : _replace(_location.protocol)) : (_full ? _link.protocol : _replace(_link.protocol)),
+					pathname: _link.pathname.charAt(0) !== "/" ?
+						(_full ? "/" + _link.pathname : _link.pathname) :
+						(_full ? _link.pathname : _link.pathname.slice(1)),
+					protocol: !_link.protocol ||
+						":" === _link.protocol ?
+						(_full ? _location.protocol : _replace(_location.protocol)) :
+						(_full ? _link.protocol : _replace(_link.protocol)),
 					search: _full ? _link.search : _replace(_link.search),
 					query: _full ? _link.search : _replace(_link.search),
 					isAbsolute: _isAbsolute,
@@ -680,13 +773,20 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 
 		var isNodejs = "undefined" !== typeof process && "undefined" !== typeof require || "";
 		var isElectron = (function () {
-			if (typeof root !== "undefined" && typeof root.process === "object" && root.process.type === "renderer") {
+			if (typeof root !== "undefined" &&
+				typeof root.process === "object" &&
+				root.process.type === "renderer") {
 				return true;
 			}
-			if (typeof root !== "undefined" && typeof root.process !== "undefined" && typeof root.process.versions === "object" && !!root.process.versions.electron) {
+			if (typeof root !== "undefined" &&
+				typeof root.process !== "undefined" &&
+				typeof root.process.versions === "object" &&
+				!!root.process.versions.electron) {
 				return true;
 			}
-			if (typeof navigator === "object" && typeof navigator.userAgent === "string" && navigator.userAgent.indexOf("Electron") >= 0) {
+			if (typeof navigator === "object" &&
+				typeof navigator.userAgent === "string" &&
+				navigator.userAgent.indexOf("Electron") >= 0) {
 				return true;
 			}
 			return false;
@@ -743,7 +843,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			};
 			var arrange = function (e) {
 				var externalLinkIsBindedClass = "external-link--is-binded";
-				if (!e[classList].contains(externalLinkIsBindedClass)) {
+				if (!hasClass(e, externalLinkIsBindedClass)) {
 					var url = e[getAttribute]("href") || "";
 					if (url && parseLink(url).isCrossDomain && parseLink(url).hasHTTP) {
 						e.title = "" + (parseLink(url).hostname || "") + " откроется в новой вкладке";
@@ -751,9 +851,9 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 							e.target = "_blank";
 							e.rel = "noopener";
 						} else {
-							e[_addEventListener]("click", handle.bind(null, url));
+							addListener(e, "click", handle.bind(null, url));
 						}
-						e[classList].add(externalLinkIsBindedClass);
+						addClass(e, externalLinkIsBindedClass);
 					}
 				}
 			};
@@ -768,12 +868,12 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		};
 		manageExternalLinkAll();
 
-		var wrapper = document[getElementsByClassName]("wrapper")[0] || "";
+		var wrapper = getByClass(document, "wrapper")[0] || "";
 
 		manageExternalLinkAll(wrapper);
 
 		var manageLocationQrcode = function () {
-			var qrcode = document[getElementsByClassName]("qrcode")[0] || "";
+			var qrcode = getByClass(document, "qrcode")[0] || "";
 			var timerQrcode;
 			var showQrcode = function () {
 				clearTimeout(timerQrcode);
@@ -782,7 +882,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 				qrcode[style][opacity] = 1;
 			};
 			if (qrcode) {
-				var img = document[createElement]("img");
+				var img = document.createElement("img");
 				var imgTitle = docTitle ? ("Ссылка на страницу «" + docTitle.replace(/\[[^\]]*?\]/g, "").trim() + "»") : "";
 				var imgSrc = forcedHTTP + "://chart.googleapis.com/chart?cht=qr&chld=M%7C4&choe=UTF-8&chs=512x512&chl=" + encodeURIComponent(locHref);
 				img[alt] = imgTitle;
@@ -821,7 +921,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		manageLocationQrcode();
 
 		var manageDownloadAppBtn = function () {
-			var downloadApp = document[getElementsByClassName]("download-app")[0] || "";
+			var downloadApp = getByClass(document, "download-app")[0] || "";
 			var link = downloadApp ? downloadApp[getElementsByTagName]("a")[0] || "" : "";
 			var img = downloadApp ? downloadApp[getElementsByTagName]("img")[0] || "" : "";
 			var timer;
@@ -888,35 +988,35 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			parallax = new Parallax(scene);
 		}
 
-		var guesture = document[getElementsByClassName]("guesture")[0] || "";
+		var guesture = getByClass(document, "guesture")[0] || "";
 
-		var start = document[getElementsByClassName]("start")[0] || "";
-		var hand = document[getElementsByClassName]("hand")[0] || "";
+		var start = getByClass(document, "start")[0] || "";
+		var hand = getByClass(document, "hand")[0] || "";
 
 		var revealStart = function () {
 			if (start) {
-				start[classList].remove(bounceOutDownClass);
-				start[classList].add(bounceInUpClass);
+				removeClass(start, bounceOutDownClass);
+				addClass(start, bounceInUpClass);
 				setStyleDisplayBlock(start);
 			}
 			if (hand) {
-				hand[classList].remove(bounceOutDownClass);
-				hand[classList].add(bounceInUpClass);
+				removeClass(hand, bounceOutDownClass);
+				addClass(hand, bounceInUpClass);
 				setStyleDisplayBlock(hand);
 			}
 			if (guesture) {
-				guesture[classList].add(bounceOutUpClass);
+				addClass(guesture, bounceOutUpClass);
 			}
 		};
 
 		var concealStart = function () {
 			if (start) {
-				start[classList].remove(bounceInUpClass);
-				start[classList].add(bounceOutDownClass);
+				removeClass(start, bounceInUpClass);
+				addClass(start, bounceOutDownClass);
 			}
 			if (hand) {
-				hand[classList].remove(bounceInUpClass);
-				hand[classList].add(bounceOutDownClass);
+				removeClass(hand, bounceInUpClass);
+				addClass(hand, bounceOutDownClass);
 			}
 			var timer;
 			var hideStart = function () {
@@ -928,14 +1028,14 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			timer = setTimeout(hideStart, 1000);
 		};
 
-		var mousewheeldown = document[getElementsByClassName]("mousewheeldown")[0] || "";
-		var swipeup = document[getElementsByClassName]("swipeup")[0] || "";
+		var mousewheeldown = getByClass(document, "mousewheeldown")[0] || "";
+		var swipeup = getByClass(document, "swipeup")[0] || "";
 		if (mousewheeldown && swipeup) {
 			if (hasTouch) {
 				setStyleDisplayNone(mousewheeldown);
 				if (root.tocca) {
-					document[_addEventListener]("swipeup", revealStart, {passive: true});
-					document[_addEventListener]("swipedown", concealStart, {passive: true});
+					addListener(document, "swipeup", revealStart, {passive: true});
+					addListener(document, "swipedown", concealStart, {passive: true});
 				}
 			} else {
 				if (hasWheel) {
@@ -958,30 +1058,30 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 				}
 			}
 			if (hasTouch || hasWheel) {
-				guesture[classList].add(bounceInUpClass);
+				addClass(guesture, bounceInUpClass);
 				setStyleDisplayBlock(guesture);
 			}
 		}
 
 		var hideOtherIsSocial = function (thisObj) {
 			var _thisObj = thisObj || this;
-			var elem = document[getElementsByClassName]("is-social") || "";
+			var elem = getByClass(document, isSocialClass) || "";
 			if (elem) {
 				var k,
 				n;
 				for (k = 0, n = elem[_length]; k < n; k += 1) {
 					if (_thisObj !== elem[k]) {
-						elem[k][classList].remove(isActiveClass);
+						removeClass(elem[k], isActiveClass);
 					}
 				}
 				k = n = null;
 			}
 		};
-		root[_addEventListener]("click", hideOtherIsSocial);
+		addListener(root, "click", hideOtherIsSocial);
 
 		var yshare;
 		var manageShareButtons = function () {
-			var btn = document[getElementsByClassName]("btn-share-buttons")[0] || "";
+			var btn = getByClass(document, "btn-share-buttons")[0] || "";
 			var yaShare2Id = "ya-share2";
 			var yaShare2 = document[getElementById](yaShare2Id) || "";
 			var locHref = root.location || "";
@@ -990,7 +1090,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
-					yaShare2[classList].toggle(isActiveClass);
+					toggleClass(yaShare2, isActiveClass);
 					hideOtherIsSocial(yaShare2);
 					var initScript = function () {
 						try {
@@ -1025,7 +1125,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			};
 			if (btn && yaShare2) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handle);
+					addListener(btn, "click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
@@ -1037,13 +1137,13 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		var manageVKLikeButton = function () {
 			var vkLikeId = "vk-like";
 			var vkLike = document[getElementById](vkLikeId) || "";
-			var holderVkLike = document[getElementsByClassName]("holder-vk-like")[0] || "";
-			var btn = document[getElementsByClassName]("btn-show-vk-like")[0] || "";
+			var holderVkLike = getByClass(document, "holder-vk-like")[0] || "";
+			var btn = getByClass(document, "btn-show-vk-like")[0] || "";
 			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
-					holderVkLike[classList].toggle(isActiveClass);
+					toggleClass(holderVkLike, isActiveClass);
 					hideOtherIsSocial(holderVkLike);
 					var initScript = function () {
 						if (!vlike) {
@@ -1075,7 +1175,7 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 			};
 			if (btn && vkLike) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handle);
+					addListener(btn, "click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
@@ -1089,12 +1189,12 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 	var supportsPassive = (function () {
 		var support = false;
 		try {
-			var opts = Object[defineProperty] && Object[defineProperty]({}, "passive", {
+			var opts = Object.defineProperty && Object.defineProperty({}, "passive", {
 					get: function () {
 						support = true;
 					}
 				});
-			root[_addEventListener]("test", function () {}, opts);
+			addListener(root, "test", function () {}, opts);
 		} catch (err) {}
 		return support;
 	})();
@@ -1105,20 +1205,20 @@ ToProgress, unescape, VK, WheelIndicator, Ya*/
 		!root.requestAnimationFrame ||
 		!root.matchMedia ||
 		("undefined" === typeof root.Element && !("dataset" in docElem)) ||
-		!("classList" in document[createElement]("_")) ||
-		document[createElementNS] && !("classList" in document[createElementNS]("http://www.w3.org/2000/svg", "g")) ||
-		(root.attachEvent && !root[_addEventListener]) ||
+		!("classList" in document.createElement("_")) ||
+		document.createElementNS && !("classList" in document.createElementNS("http://www.w3.org/2000/svg", "g")) ||
+		(root.attachEvent && !root.addEventListener) ||
 		!("onhashchange" in root) ||
 		!Array.prototype.indexOf ||
 		!root.Promise ||
 		!root.fetch ||
-		!document[querySelectorAll] ||
-		!document[querySelector] ||
+		!document.querySelectorAll ||
+		!document.querySelector ||
 		!Function.prototype.bind ||
-		(Object[defineProperty] &&
-			Object[getOwnPropertyDescriptor] &&
-			Object[getOwnPropertyDescriptor](Element.prototype, "textContent") &&
-			!Object[getOwnPropertyDescriptor](Element.prototype, "textContent").get) ||
+		(Object.defineProperty &&
+			Object.getOwnPropertyDescriptor &&
+			Object.getOwnPropertyDescriptor(Element.prototype, "textContent") &&
+			!Object.getOwnPropertyDescriptor(Element.prototype, "textContent").get) ||
 		!("undefined" !== typeof root.localStorage && "undefined" !== typeof root.sessionStorage) ||
 		!root.WeakMap ||
 		!root.MutationObserver;

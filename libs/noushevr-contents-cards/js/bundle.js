@@ -1,7 +1,8 @@
 /*jslint browser: true */
 /*jslint node: true */
-/*global ActiveXObject, doesFontExist, echo, loadJsCss, Minigrid,
- Mustache, platform, Promise, t, ToProgress, VK, WheelIndicator, Ya */
+/*global ActiveXObject, doesFontExist, echo, loadJsCss, addListener, getByClass,
+ addClass, hasClass, removeClass, toggleClass, Minigrid, Mustache, platform,
+ Promise, t, ToProgress, VK, WheelIndicator, Ya*/
 /*property console, join, split */
 /*!
  * safe way to handle console.log
@@ -34,6 +35,98 @@
 	prop = method = dummy = properties = methods = null;
 })("undefined" !== typeof window ? window : this);
 /*!
+ * Super-simple wrapper around addEventListener and attachEvent (old IE).
+ * Does not handle differences in the Event-objects.
+ * @see {@link https://github.com/finn-no/eventlistener}
+ */
+(function (root) {
+	"use strict";
+	var wrap = function (standard, fallback) {
+		return function (el, type, listener, useCapture) {
+			if (el[standard]) {
+				el[standard](type, listener, useCapture);
+			} else {
+				if (el[fallback]) {
+					el[fallback]("on" + type, listener);
+				}
+			}
+		};
+	};
+	root.addListener = wrap("addEventListener", "attachEvent");
+	root.removeListener = wrap("removeEventListener", "detachEvent");
+})("undefined" !== typeof window ? window : this);
+/*!
+ * get elements by class name wrapper
+ */
+(function (root, document) {
+	"use strict";
+	var getByClass = function (parent, name) {
+		if (!Element.getElementsByClassName) {
+			var children = (parent || document.body).getElementsByTagName("*"),
+			elements = [],
+			classRE = new RegExp("\\b" + name + "\\b"),
+			child;
+			var i,
+			l;
+			for (i = 0, l = children.length; i < l; i += 1) {
+				child = children[i];
+				if (classRE.test(child.className)) {
+					elements.push(child);
+				}
+			}
+			i = l = null;
+			return elements;
+		} else {
+			return parent ? parent.getElementsByClassName(name) : "";
+		}
+	};
+	root.getByClass = getByClass;
+})("undefined" !== typeof window ? window : this, document);
+/*!
+ * class list wrapper
+ */
+(function (root, document) {
+	"use strict";
+	var classList = "classList";
+	var hasClass;
+	var addClass;
+	var removeClass;
+	if (classList in document.documentElement) {
+		hasClass = function (el, name) {
+			return el[classList].contains(name);
+		};
+		addClass = function (el, name) {
+			el[classList].add(name);
+		};
+		removeClass = function (el, name) {
+			el[classList].remove(name);
+		};
+	} else {
+		hasClass = function (el, name) {
+			return new RegExp("\\b" + name + "\\b").test(el.className);
+		};
+		addClass = function (el, name) {
+			if (!hasClass(el, name)) {
+				el.className += " " + name;
+			}
+		};
+		removeClass = function (el, name) {
+			el.className = el.className.replace(new RegExp("\\b" + name + "\\b", "g"), "");
+		};
+	}
+	var toggleClass = function (el, name) {
+		if (hasClass(el, name)) {
+			removeClass(el, name);
+		} else {
+			addClass(el, name);
+		}
+	};
+	root.hasClass = hasClass;
+	root.addClass = addClass;
+	root.removeClass = removeClass;
+	root.toggleClass = toggleClass;
+})("undefined" !== typeof window ? window : this, document);
+/*!
  * modified ToProgress v0.1.1
  * arguments.callee changed to TP, a local wrapper function,
  * so that public function name is now customizable;
@@ -52,7 +145,6 @@
 		var TP = function () {
 			var _addEventListener = "addEventListener";
 			var appendChild = "appendChild";
-			var createElement = "createElement";
 			var firstChild = "firstChild";
 			var getElementById = "getElementById";
 			var getElementsByClassName = "getElementsByClassName";
@@ -63,7 +155,7 @@
 			var style = "style";
 			function whichTransitionEvent() {
 				var t,
-				el = document[createElement]("fakeelement");
+				el = document.createElement("fakeelement");
 				var transitions = {
 					"transition": "transitionend",
 					"OTransition": "oTransitionEnd",
@@ -99,7 +191,7 @@
 					key = null;
 				}
 				this.options.opacityDuration = this.options.duration * 3;
-				this.progressBar = document[createElement]("div");
+				this.progressBar = document.createElement("div");
 				this.progressBar.id = this.options.id;
 				this.progressBar.setCSS = function (style) {
 					var property;
@@ -212,11 +304,10 @@
 (function (root, document) {
 	"use strict";
 	var doesFontExist = function (fontName) {
-		var createElement = "createElement";
 		var getContext = "getContext";
 		var measureText = "measureText";
 		var width = "width";
-		var canvas = document[createElement]("canvas");
+		var canvas = document.createElement("canvas");
 		var context = canvas[getContext]("2d");
 		var text = "abcdefghijklmnopqrstuvwxyz0123456789";
 		context.font = "72px monospace";
@@ -243,7 +334,6 @@
 		var _this = this;
 		var appendChild = "appendChild";
 		var body = "body";
-		var createElement = "createElement";
 		var getElementsByTagName = "getElementsByTagName";
 		var setAttribute = "setAttribute";
 		var _length = "length";
@@ -255,7 +345,7 @@
 		_this.callback = callback || function () {};
 		_this.type = type ? type.toLowerCase() : "";
 		_this.loadStyle = function (file) {
-			var link = document[createElement]("link");
+			var link = document.createElement("link");
 			link.rel = "stylesheet";
 			link.type = "text/css";
 			link.href = file;
@@ -269,7 +359,7 @@
 			(_this.body || _this.head)[appendChild](link);
 		};
 		_this.loadScript = function (i) {
-			var script = document[createElement]("script");
+			var script = document.createElement("script");
 			script.type = "text/javascript";
 			script.async = true;
 			script.src = _this.js[i];
@@ -319,15 +409,6 @@
 	var docElem = document.documentElement || "";
 	var docBody = document.body || "";
 
-	var classList = "classList";
-	var className = "className";
-	var createElement = "createElement";
-	var createElementNS = "createElementNS";
-	var defineProperty = "defineProperty";
-	var getOwnPropertyDescriptor = "getOwnPropertyDescriptor";
-	var querySelector = "querySelector";
-	var querySelectorAll = "querySelectorAll";
-	var _addEventListener = "addEventListener";
 	var _length = "length";
 
 	var progressBar = new ToProgress({
@@ -346,17 +427,18 @@
 	progressBar.increase(20);
 
 	var toStringFn = {}.toString;
-	var supportsSvgSmilAnimation = !!document[createElementNS] && (/SVGAnimate/).test(toStringFn.call(document[createElementNS]("http://www.w3.org/2000/svg", "animate"))) || "";
+	var supportsSvgSmilAnimation = !!document.createElementNS &&
+		(/SVGAnimate/).test(toStringFn.call(document.createElementNS("http://www.w3.org/2000/svg", "animate"))) || "";
 
 	if (supportsSvgSmilAnimation && docElem) {
-		docElem[classList].add("svganimate");
+		addClass(docElem, "svganimate");
 	}
 
 	var hasTouch = "ontouchstart" in docElem || "";
 
-	var hasWheel = "onwheel" in document[createElement]("div") || void 0 !== document.onmousewheel || "";
+	var hasWheel = "onwheel" in document.createElement("div") || void 0 !== document.onmousewheel || "";
 
-	var getHTTP = function(force) {
+	var getHTTP = function (force) {
 		var any = force || "";
 		var locProtocol = root.location.protocol || "";
 		return "http:" === locProtocol ? "http" : "https:" === locProtocol ? "https" : any ? "http" : "";
@@ -366,7 +448,7 @@
 
 	var supportsCanvas;
 	supportsCanvas = (function () {
-		var elem = document[createElement]("canvas");
+		var elem = document.createElement("canvas");
 		return !!(elem.getContext && elem.getContext("2d"));
 	})();
 
@@ -381,7 +463,6 @@
 		var dataset = "dataset";
 		var getAttribute = "getAttribute";
 		var getElementById = "getElementById";
-		var getElementsByClassName = "getElementsByClassName";
 		var getElementsByTagName = "getElementsByTagName";
 		var innerHTML = "innerHTML";
 		var parentNode = "parentNode";
@@ -392,15 +473,16 @@
 		var isActiveClass = "is-active";
 		var isFixedClass = "is-fixed";
 		var isHiddenClass = "is-hidden";
+		var isSocialClass = "is-social";
 
 		var docTitle = document[title] || "";
 		var navUA = navigator.userAgent || "";
 
 		progressBar.increase(20);
 
-		if (docElem && docElem[classList]) {
-			docElem[classList].remove("no-js");
-			docElem[classList].add("js");
+		if (docElem && docElem.classList) {
+			removeClass(docElem, "no-js");
+			addClass(docElem, "js");
 		}
 
 		var getHumanDate = (function () {
@@ -440,7 +522,7 @@
 			var getMutations = function (e) {
 				var onMutation = function (m) {
 					console.log("mutations observer: " + m.type);
-					console.log(m.type, "target: " + m.target.tagName + ("." + m.target[className] || "#" + m.target.id || ""));
+					console.log(m.type, "target: " + m.target.tagName + ("." + m.target.className || "#" + m.target.id || ""));
 					console.log(m.type, "added: " + m.addedNodes[_length] + " nodes");
 					console.log(m.type, "removed: " + m.removedNodes[_length] + " nodes");
 					if ("childList" === m.type || "subtree" === m.type) {
@@ -467,7 +549,7 @@
 		};
 
 		var minigridClass = "minigrid";
-		var minigrid = document[getElementsByClassName](minigridClass)[0] || "";
+		var minigrid = getByClass(document, minigridClass)[0] || "";
 
 		observeMutations(minigrid);
 
@@ -544,26 +626,36 @@
 				var _isAbsolute = (0 === url.indexOf("//") || !!~url.indexOf("://"));
 				var _locationHref = root.location || "";
 				var _origin = function () {
-					var o = _locationHref.protocol + "//" + _locationHref.hostname + (_locationHref.port ? ":" + _locationHref.port : "");
+					var o = _locationHref.protocol +
+						"//" +
+						_locationHref.hostname +
+						(_locationHref.port ? ":" + _locationHref.port : "");
 					return o || "";
 				};
 				var _isCrossDomain = function () {
-					var c = document[createElement]("a");
+					var c = document.createElement("a");
 					c.href = url;
 					var v = c.protocol + "//" + c.hostname + (c.port ? ":" + c.port : "");
 					return v !== _origin();
 				};
-				var _link = document[createElement]("a");
+				var _link = document.createElement("a");
 				_link.href = url;
 				return {
 					href: _link.href,
 					origin: _origin(),
 					host: _link.host || _location.host,
-					port: ("0" === _link.port || "" === _link.port) ? _protocol(_link.protocol) : (_full ? _link.port : _replace(_link.port)),
+					port: ("0" === _link.port || "" === _link.port) ?
+						_protocol(_link.protocol) :
+						(_full ? _link.port : _replace(_link.port)),
 					hash: _full ? _link.hash : _replace(_link.hash),
 					hostname: _link.hostname || _location.hostname,
-					pathname: _link.pathname.charAt(0) !== "/" ? (_full ? "/" + _link.pathname : _link.pathname) : (_full ? _link.pathname : _link.pathname.slice(1)),
-					protocol: !_link.protocol || ":" === _link.protocol ? (_full ? _location.protocol : _replace(_location.protocol)) : (_full ? _link.protocol : _replace(_link.protocol)),
+					pathname: _link.pathname.charAt(0) !== "/" ?
+						(_full ? "/" + _link.pathname : _link.pathname) :
+						(_full ? _link.pathname : _link.pathname.slice(1)),
+					protocol: !_link.protocol ||
+						":" === _link.protocol ?
+						(_full ? _location.protocol : _replace(_location.protocol)) :
+						(_full ? _link.protocol : _replace(_link.protocol)),
 					search: _full ? _link.search : _replace(_link.search),
 					query: _full ? _link.search : _replace(_link.search),
 					isAbsolute: _isAbsolute,
@@ -577,13 +669,20 @@
 
 		var isNodejs = "undefined" !== typeof process && "undefined" !== typeof require || "";
 		var isElectron = (function () {
-			if (typeof root !== "undefined" && typeof root.process === "object" && root.process.type === "renderer") {
+			if (typeof root !== "undefined" &&
+				typeof root.process === "object" &&
+				root.process.type === "renderer") {
 				return true;
 			}
-			if (typeof root !== "undefined" && typeof root.process !== "undefined" && typeof root.process.versions === "object" && !!root.process.versions.electron) {
+			if (typeof root !== "undefined" &&
+				typeof root.process !== "undefined" &&
+				typeof root.process.versions === "object" &&
+				!!root.process.versions.electron) {
 				return true;
 			}
-			if (typeof navigator === "object" && typeof navigator.userAgent === "string" && navigator.userAgent.indexOf("Electron") >= 0) {
+			if (typeof navigator === "object" &&
+				typeof navigator.userAgent === "string" &&
+				navigator.userAgent.indexOf("Electron") >= 0) {
 				return true;
 			}
 			return false;
@@ -640,7 +739,7 @@
 			};
 			var arrange = function (e) {
 				var externalLinkIsBindedClass = "external-link--is-binded";
-				if (!e[classList].contains(externalLinkIsBindedClass)) {
+				if (!hasClass(e, externalLinkIsBindedClass)) {
 					var url = e[getAttribute]("href") || "";
 					if (url && parseLink(url).isCrossDomain && parseLink(url).hasHTTP) {
 						e.title = "" + (parseLink(url).hostname || "") + " откроется в новой вкладке";
@@ -648,9 +747,9 @@
 							e.target = "_blank";
 							e.rel = "noopener";
 						} else {
-							e[_addEventListener]("click", handle.bind(null, url));
+							addListener(e, "click", handle.bind(null, url));
 						}
-						e[classList].add(externalLinkIsBindedClass);
+						addClass(e, externalLinkIsBindedClass);
 					}
 				}
 			};
@@ -671,10 +770,10 @@
 			};
 			var x = root.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 			x.overrideMimeType("application/json;charset=utf-8");
-			x.open("GET", url, !0);
-			x.withCredentials = !1;
+			x.open("GET", url, true);
+			x.withCredentials = false;
 			x.onreadystatechange = function () {
-				if (x.status === "404" || x.status === "0") {
+				if (x.status === 404 || x.status === 0) {
 					console.log("Error XMLHttpRequest-ing file", x.status);
 					return onerror && "function" === typeof onerror && onerror();
 				} else if (x.readyState === 4 && x.status === 200 && x.responseText) {
@@ -725,7 +824,7 @@
 			tick();
 		};
 
-		var wrapper = document[getElementsByClassName]("wrapper")[0] || "";
+		var wrapper = getByClass(document, "wrapper")[0] || "";
 
 		manageExternalLinkAll(wrapper);
 
@@ -865,7 +964,7 @@
 					 */
 					var pagesKeysNumber = countObjKeys(jsonObj.pages);
 					insertFromTemplate(jsonObj, "template_card_grid", "target_card_grid", function () {
-						if (wrapper[getElementsByClassName](minigridItemClass)[pagesKeysNumber - 1]) {
+						if (getByClass(wrapper, minigridItemClass)[pagesKeysNumber - 1]) {
 							resolve();
 						} else {
 							reject();
@@ -897,15 +996,15 @@
 								jsonObj[key][jsonTitleKeyName] &&
 								jsonObj[key][jsonTextKeyName]) {
 
-								var minigridItem = document[createElement]("div");
-								minigridItem[classList].add(minigridItemClass);
+								var minigridItem = document.createElement("div");
+								addClass(minigridItem, minigridItemClass);
 
-								var card = document[createElement]("div");
-								card[classList].add(cardClass);
+								var card = document.createElement("div");
+								addClass(card, cardClass);
 
 								minigridItem[appendChild](card);
 
-								var img = document[createElement]("img");
+								var img = document.createElement("img");
 								if (jsonObj[key][jsonWidthKeyName] && jsonObj[key][jsonHeightKeyName]) {
 									img[src] = ["data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20",
 										jsonObj[key][jsonWidthKeyName],
@@ -924,27 +1023,27 @@
 									}
 								}
 								img[dataset][jsonSrcKeyName] = jsonObj[key][jsonSrcKeyName];
-								img[classList].add(dataSrcImgClass);
+								addClass(img, dataSrcImgClass);
 								img[alt] = "";
 
 								card[appendChild](img);
 
-								var cardContent = document[createElement]("div");
-								cardContent[classList].add(cardContentClass);
+								var cardContent = document.createElement("div");
+								addClass(cardContent, cardContentClass);
 
-								var heading2 = document[createElement]("h2");
+								var heading2 = document.createElement("h2");
 								heading2[appendChild](document[createTextNode](jsonObj[key][jsonTitleKeyName]));
 
 								cardContent[appendChild](heading2);
 
-								var paragraph = document[createElement]("p");
+								var paragraph = document.createElement("p");
 								paragraph[appendChild](document[createTextNode](jsonObj[key][jsonTextKeyName]));
 
 								cardContent[appendChild](paragraph);
 
 								card[appendChild](cardContent);
 
-								var cardLink = document[createElement]("a");
+								var cardLink = document.createElement("a");
 								cardLink[href] = ["", jsonObj[key][jsonHrefKeyName]].join("");
 								cardLink[appendChild](card);
 
@@ -1023,7 +1122,7 @@
 					}
 				};
 				initMinigrid();
-				root[_addEventListener]("resize", updateMinigrid, {passive: true});
+				addListener(root, "resize", updateMinigrid, {passive: true});
 			};
 
 			var timerSetLazyloading;
@@ -1070,23 +1169,23 @@
 
 		var hideOtherIsSocial = function (thisObj) {
 			var _thisObj = thisObj || this;
-			var elem = document[getElementsByClassName]("is-social") || "";
+			var elem = getByClass(document, isSocialClass) || "";
 			if (elem) {
 				var k,
 				n;
 				for (k = 0, n = elem[_length]; k < n; k += 1) {
 					if (_thisObj !== elem[k]) {
-						elem[k][classList].remove(isActiveClass);
+						removeClass(elem[k], isActiveClass);
 					}
 				}
 				k = n = null;
 			}
 		};
-		root[_addEventListener]("click", hideOtherIsSocial);
+		addListener(root, "click", hideOtherIsSocial);
 
 		var yshare;
 		var manageShareButtons = function () {
-			var btn = document[getElementsByClassName]("btn-share-buttons")[0] || "";
+			var btn = getByClass(document, "btn-share-buttons")[0] || "";
 			var yaShare2Id = "ya-share2";
 			var yaShare2 = document[getElementById](yaShare2Id) || "";
 			var locHref = root.location || "";
@@ -1095,7 +1194,7 @@
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
-					yaShare2[classList].toggle(isActiveClass);
+					toggleClass(yaShare2, isActiveClass);
 					hideOtherIsSocial(yaShare2);
 					var initScript = function () {
 						try {
@@ -1130,7 +1229,7 @@
 			};
 			if (btn && yaShare2) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handle);
+					addListener(btn, "click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
@@ -1142,13 +1241,13 @@
 		var manageVKLikeButton = function () {
 			var vkLikeId = "vk-like";
 			var vkLike = document[getElementById](vkLikeId) || "";
-			var holderVkLike = document[getElementsByClassName]("holder-vk-like")[0] || "";
-			var btn = document[getElementsByClassName]("btn-show-vk-like")[0] || "";
+			var holderVkLike = getByClass(document, "holder-vk-like")[0] || "";
+			var btn = getByClass(document, "btn-show-vk-like")[0] || "";
 			var handle = function (ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				var logic = function () {
-					holderVkLike[classList].toggle(isActiveClass);
+					toggleClass(holderVkLike, isActiveClass);
 					hideOtherIsSocial(holderVkLike);
 					var initScript = function () {
 						if (!vlike) {
@@ -1180,7 +1279,7 @@
 			};
 			if (btn && vkLike) {
 				if ("undefined" !== typeof getHTTP && getHTTP()) {
-					btn[_addEventListener]("click", handle);
+					addListener(btn, "click", handle);
 				} else {
 					setStyleDisplayNone(btn);
 				}
@@ -1188,7 +1287,7 @@
 		};
 		manageVKLikeButton();
 
-		var titleBar = document[getElementsByClassName]("title-bar")[0] || "";
+		var titleBar = getByClass(document, "title-bar")[0] || "";
 		var titleBarHeight = titleBar.offsetHeight || 0;
 
 		/*!
@@ -1197,15 +1296,15 @@
 		/* var handleTitleBar = function () {
 			var logic = function () {
 				if ((document[body].scrollTop || docElem.scrollTop || 0) > titleBarHeight) {
-					titleBar[classList].add(isFixedClass);
+					addClass(titleBar, isFixedClass);
 				} else {
-					titleBar[classList].remove(isFixedClass);
+					removeClass(titleBar, isFixedClass);
 				}
 			};
 			throttle(logic, 100).call(root);
 		};
 		if (titleBar) {
-			root[_addEventListener]("scroll", handleTitleBar, {passive: true});
+			addListener(root, "scroll", handleTitleBar, {passive: true});
 		} */
 
 		/*!
@@ -1220,36 +1319,36 @@
 
 		var hideTitleBar = function () {
 			var logic = function () {
-				titleBar[classList].remove(slideInDownClass);
+				removeClass(titleBar, slideInDownClass);
 				if ((document[body].scrollTop || docElem.scrollTop || 0) > titleBarHeight) {
-					titleBar[classList].add(slideOutUpClass);
+					addClass(titleBar, slideOutUpClass);
 				} else {
-					titleBar[classList].remove(isFixedClass);
-					titleBar[classList].remove(slideOutUpClass);
+					removeClass(titleBar, isFixedClass);
+					removeClass(titleBar, slideOutUpClass);
 				}
 			};
 			throttle(logic, 100).call(root);
 		};
 		var revealTitleBar = function () {
 			var logic = function () {
-				titleBar[classList].remove(slideOutUpClass);
+				removeClass(titleBar, slideOutUpClass);
 				if ((document[body].scrollTop || docElem.scrollTop || 0) > titleBarHeight) {
-					titleBar[classList].add(isFixedClass);
-					titleBar[classList].add(slideInDownClass);
+					addClass(titleBar, isFixedClass);
+					addClass(titleBar, slideInDownClass);
 				} else {
-					titleBar[classList].remove(isFixedClass);
-					titleBar[classList].remove(slideInDownClass);
+					removeClass(titleBar, isFixedClass);
+					removeClass(titleBar, slideInDownClass);
 				}
 			};
 			throttle(logic, 100).call(root);
 		};
 		if (wrapper && titleBar) {
-			titleBar[classList].add(animatedClass);
-			titleBar[classList].add(duration4msClass);
+			addClass(titleBar, animatedClass);
+			addClass(titleBar, duration4msClass);
 			if (hasTouch) {
 				if (root.tocca) {
-					document[_addEventListener]("swipeup", hideTitleBar, {passive: true});
-					document[_addEventListener]("swipedown", revealTitleBar, {passive: true});
+					addListener(document, "swipeup", hideTitleBar, {passive: true});
+					addListener(document, "swipedown", revealTitleBar, {passive: true});
 				}
 			} else {
 				if (hasWheel) {
@@ -1279,22 +1378,22 @@
 		 */
 		var hideTitleBar = function () {
 			var logic = function () {
-				titleBar[classList].remove(isFixedClass);
+				removeClass(titleBar, isFixedClass);
 				if ((document[body].scrollTop || docElem.scrollTop || 0) > titleBarHeight) {
-					titleBar[classList].add(isHiddenClass);
+					addClass(titleBar, isHiddenClass);
 				} else {
-					titleBar[classList].remove(isHiddenClass);
+					removeClass(titleBar, isHiddenClass);
 				}
 			};
 			throttle(logic, 100).call(root);
 		};
 		var revealTitleBar = function () {
 			var logic = function () {
-				titleBar[classList].remove(isHiddenClass);
+				removeClass(titleBar, isHiddenClass);
 				if ((document[body].scrollTop || docElem.scrollTop || 0) > titleBarHeight) {
-					titleBar[classList].add(isFixedClass);
+					addClass(titleBar, isFixedClass);
 				} else {
-					titleBar[classList].remove(isFixedClass);
+					removeClass(titleBar, isFixedClass);
 				}
 			};
 			throttle(logic, 100).call(root);
@@ -1302,18 +1401,18 @@
 		var resetTitleBar = function () {
 			var logic = function () {
 				if ((document[body].scrollTop || docElem.scrollTop || 0) < titleBarHeight) {
-					titleBar[classList].remove(isHiddenClass);
-					titleBar[classList].remove(isFixedClass);
+					removeClass(titleBar, isHiddenClass);
+					removeClass(titleBar, isFixedClass);
 				}
 			};
 			throttle(logic, 100).call(root);
 		};
 		if (titleBar) {
-			root[_addEventListener]("scroll", resetTitleBar, {passive: true});
+			addListener(root, "scroll", resetTitleBar, {passive: true});
 			if (hasTouch) {
 				if (root.tocca) {
-					document[_addEventListener]("swipeup", hideTitleBar, {passive: true});
-					document[_addEventListener]("swipedown", revealTitleBar, {passive: true});
+					addListener(document, "swipeup", hideTitleBar, {passive: true});
+					addListener(document, "swipedown", revealTitleBar, {passive: true});
 				}
 			} else {
 				if (hasWheel) {
@@ -1338,10 +1437,10 @@
 
 		var manageBtnTotop = function () {
 			var btnClass = "btn-totop";
-			var btn = document[getElementsByClassName](btnClass)[0] || "";
+			var btn = getByClass(document, btnClass)[0] || "";
 			if (!btn) {
-				btn = document[createElement]("a");
-				btn[classList].add(btnClass);
+				btn = document.createElement("a");
+				addClass(btn, btnClass);
 				/* jshint -W107 */
 				btn.href = "javascript:void(0);";
 				/* jshint +W107 */
@@ -1359,17 +1458,17 @@
 					var windowHeight = _this.innerHeight || docElem.clientHeight || docBody.clientHeight || "";
 					if (scrollPosition && windowHeight && btn) {
 						if (scrollPosition > windowHeight) {
-							btn[classList].add(isActiveClass);
+							addClass(btn, isActiveClass);
 						} else {
-							btn[classList].remove(isActiveClass);
+							removeClass(btn, isActiveClass);
 						}
 					}
 				};
 				throttle(logic, 100).call(root);
 			};
 			if (docBody) {
-				btn[_addEventListener]("click", handle);
-				root[_addEventListener]("scroll", handleWindow, {passive: true});
+				addListener(btn, "click", handle);
+				addListener(root, "scroll", handleWindow, {passive: true});
 			}
 		};
 		manageBtnTotop();
@@ -1380,12 +1479,12 @@
 	var supportsPassive = (function () {
 		var support = false;
 		try {
-			var opts = Object[defineProperty] && Object[defineProperty]({}, "passive", {
+			var opts = Object.defineProperty && Object.defineProperty({}, "passive", {
 					get: function () {
 						support = true;
 					}
 				});
-			root[_addEventListener]("test", function () {}, opts);
+			addListener(root, "test", function () {}, opts);
 		} catch (err) {}
 		return support;
 	})();
@@ -1396,20 +1495,20 @@
 		!root.requestAnimationFrame ||
 		!root.matchMedia ||
 		("undefined" === typeof root.Element && !("dataset" in docElem)) ||
-		!("classList" in document[createElement]("_")) ||
-		document[createElementNS] && !("classList" in document[createElementNS]("http://www.w3.org/2000/svg", "g")) ||
-		(root.attachEvent && !root[_addEventListener]) ||
+		!("classList" in document.createElement("_")) ||
+		document.createElementNS && !("classList" in document.createElementNS("http://www.w3.org/2000/svg", "g")) ||
+		(root.attachEvent && !root.addEventListener) ||
 		!("onhashchange" in root) ||
 		!Array.prototype.indexOf ||
 		!root.Promise ||
 		!root.fetch ||
-		!document[querySelectorAll] ||
-		!document[querySelector] ||
+		!document.querySelectorAll ||
+		!document.querySelector ||
 		!Function.prototype.bind ||
-		(Object[defineProperty] &&
-			Object[getOwnPropertyDescriptor] &&
-			Object[getOwnPropertyDescriptor](Element.prototype, "textContent") &&
-			!Object[getOwnPropertyDescriptor](Element.prototype, "textContent").get) ||
+		(Object.defineProperty &&
+			Object.getOwnPropertyDescriptor &&
+			Object.getOwnPropertyDescriptor(Element.prototype, "textContent") &&
+			!Object.getOwnPropertyDescriptor(Element.prototype, "textContent").get) ||
 		!("undefined" !== typeof root.localStorage && "undefined" !== typeof root.sessionStorage) ||
 		!root.WeakMap ||
 		!root.MutationObserver;

@@ -549,6 +549,9 @@
 		};
 
 		var minigridClass = "minigrid";
+
+		var minigridIsActiveClass = "minigrid--is-active";
+
 		var minigrid = getByClass(document, minigridClass)[0] || "";
 
 		observeMutations(minigrid);
@@ -826,7 +829,7 @@
 
 		var wrapper = getByClass(document, "wrapper")[0] || "";
 
-		manageExternalLinkAll(wrapper);
+		manageExternalLinkAll();
 
 		var dataSrcImgClass = "data-src-img";
 		var minigridItemClass = "minigrid__item";
@@ -924,7 +927,7 @@
 			return count;
 		};
 
-		var manageMinigrid = function () {
+		var manageMinigrid = function (minigridClass) {
 			var generateCardGrid = function (text) {
 
 				return new Promise(function (resolve, reject) {
@@ -1099,25 +1102,26 @@
 					minigrid[style].visibility = "visible";
 					minigrid[style].opacity = 1;
 				};
-				var mgrid;
+
+				root.minigridInstance = null;
 
 				var initMinigrid = function () {
-					mgrid = new Minigrid({
+					root.minigridInstance = new Minigrid({
 							container: "." + minigridClass,
 							item: "." + minigridItemClass,
-							gutter: 20/* ,
-							done: onMinigridCreated */
+							gutter: 20
 						});
-					mgrid.mount();
+					root.minigridInstance.mount();
+					addClass(minigrid, minigridIsActiveClass);
 					onMinigridCreated();
 					addCardWrapCssRule();
 				};
-							var updateMinigrid = function () {
-					if (mgrid) {
+				var updateMinigrid = function () {
+					if (root.minigridInstance) {
 						var timer = setTimeout(function () {
 								clearTimeout(timer);
 								timer = null;
-								mgrid.mount();
+								root.minigridInstance.mount();
 							}, 100);
 					}
 				};
@@ -1148,7 +1152,7 @@
 				generateCardGrid(text).then(function () {
 					timerCreateGrid = setTimeout(createGrid, 500);
 				}).then(function () {
-					manageExternalLinkAll(wrapper);
+					manageExternalLinkAll();
 				}).then(function () {
 					timerSetLazyloading = setTimeout(setLazyloading, 1000);
 				}).catch (function (err) {
@@ -1157,15 +1161,17 @@
 			}).catch (function (err) {
 				console.log("cannot parse", jsonUrl, err);
 			}); */
-			loadUnparsedJSON(jsonUrl, function (text) {
-				generateCardGrid(text);
-				timerCreateGrid = setTimeout(createGrid, 200);
-				timerSetLazyloading = setTimeout(setLazyloading, 500);
-			}, function (err) {
-				console.log("cannot parse", jsonUrl, err);
-			});
+			if (root.Minigrid && minigrid) {
+				loadUnparsedJSON(jsonUrl, function (text) {
+					generateCardGrid(text);
+					timerCreateGrid = setTimeout(createGrid, 200);
+					timerSetLazyloading = setTimeout(setLazyloading, 500);
+				}, function (err) {
+					console.log("cannot parse", jsonUrl, err);
+				});
+			}
 		};
-		manageMinigrid();
+		manageMinigrid(minigridClass);
 
 		var hideOtherIsSocial = function (thisObj) {
 			var _thisObj = thisObj || this;
@@ -1484,7 +1490,7 @@
 						support = true;
 					}
 				});
-			addListener(root, "test", function () {}, opts);
+			root.addEventListener("test", function() {}, opts);
 		} catch (err) {}
 		return support;
 	})();

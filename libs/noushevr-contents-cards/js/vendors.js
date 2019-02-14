@@ -1803,8 +1803,7 @@ if (
 							support = true;
 						}
 					});
-
-				root.addEventListener("test", function() {}, opts);
+				addListener(root, "test", function() {}, opts);
 			} catch (err) {}
 
 			return support;
@@ -1819,7 +1818,8 @@ if (
 			},
 			listen: function listen() {
 				if (!isBindedEcho) {
-					addListener(root, 
+					addListener(
+						root,
 						"scroll",
 						throttleEchoImageAll,
 						supportsPassive
@@ -1828,7 +1828,6 @@ if (
 							  }
 							: false
 					);
-
 					document[documentElement][classList].add(isBindedEchoClass);
 				}
 			}

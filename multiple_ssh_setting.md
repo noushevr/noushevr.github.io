@@ -1,7 +1,6 @@
 Multiple SSH Keys settings for different github account
 =================================================================
 
-
 create different public key
 ---------------------------------
 
@@ -29,7 +28,6 @@ finally, you can check your saved keys
 
 	$ ssh-add -l
 
-
 Modify the ssh config
 ---------------------------------
 
@@ -51,7 +49,6 @@ Then added
 		User git
 		IdentityFile ~/.ssh/id_rsa_jexchan
 
-
 Clone you repo and modify your Git config
 ---------------------------------------------
 
@@ -70,13 +67,11 @@ or you can have global git config
 	$ git config --global user.name "jexchan"
 	$ git config --global user.email "jexchan@gmail.com"
 
-
 then use normal flow to push your code
 
 	$ git add .
 	$ git commit -m "your comments"
 	$ git push
-
 
 Another related article in Chinese
 

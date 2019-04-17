@@ -1,11 +1,15 @@
 /*jslint browser: true */
 /*jslint node: true */
-/*global ActiveXObject, addClass, addListener, appendFragment, Cookies, dataSrcImgClass, dataSrcIframeClass,
-debounce, DISQUS, doesFontExist, earlySvgSupport, earlySvgasimgSupport,
-earlyHasTouch, earlyDeviceType, earlyDeviceFormfactor, findPos, fixEnRuTypo,
-forcedHTTP, getByClass, getHumanDate, hasClass, IframeLightbox, imgLightbox,
-isNodejs, isElectron, isNwjs, isValidId, Kamil, LazyLoad, loadDeferred,
-LoadingSpinner, loadJsCss, loadJsonResponse, manageImgLightbox, manageIframeLightbox, manageExternalLinkAll, manageDataSrcImgAll, manageDataSrcIframeAll, needsPolyfills, Notifier42,
+/*global ActiveXObject, addClass, addListener, appendFragment, Cookies,
+dataSrcIframeClass, dataSrcImgClass, debounce, DISQUS, doesFontExist,
+earlySvgSupport, earlySvgasimgSupport, earlyHasTouch, earlyDeviceType,
+earlyDeviceFormfactor, findPos, fixEnRuTypo, forcedHTTP, getByClass,
+getHumanDate, hasClass, IframeLightbox, imgLightbox, isNodejs, isElectron,
+isNwjs, isValidId, Kamil, LazyLoad, loadDeferred, LoadingSpinner, loadJsCss,
+loadJsonResponse, manageChaptersSelect, manageImgLightbox,
+manageIframeLightbox, manageExpandingLayerAll, manageExternalLinkAll,
+manageDataSrcImgAll, manageDataSrcIframeAll, manageLocationQrcode,
+manageSearchInput, manageTablesort, needsPolyfills, Notifier42,
 openDeviceBrowser, parseLink, prependFragmentBefore, QRCode, removeChildren,
 removeClass, removeElement, removeListener, require, safelyParseJSON,
 scroll2Top, setDisplayBlock, setDisplayNone, supportsCanvas, supportsPassive,
@@ -126,7 +130,7 @@ truncString, unescape, VK, Ya*/
 	 * Does not handle differences in the Event-objects.
 	 * @see {@link https://github.com/finn-no/eventlistener}
 	 */
-	var wrapListener = function (standard, fallback) {
+	var setListener = function (standard, fallback) {
 		return function (el, type, listener, useCapture) {
 			if (el[standard]) {
 				el[standard](type, listener, useCapture);
@@ -137,8 +141,8 @@ truncString, unescape, VK, Ya*/
 			}
 		};
 	};
-	root.addListener = wrapListener("addEventListener", "attachEvent");
-	root.removeListener = wrapListener("removeEventListener", "detachEvent");
+	root.addListener = setListener("addEventListener", "attachEvent");
+	root.removeListener = setListener("removeEventListener", "detachEvent");
 
 	/*!
 	 * get elements by class name wrapper
@@ -1001,6 +1005,166 @@ truncString, unescape, VK, Ya*/
 	};
 
 	/*!
+	 * manageLocationQrcode
+	 */
+	root.manageLocationQrcode = function () {
+		var holder = getByClass(document, "holder-location-qrcode")[0] || "";
+		var locHref = root.location.href || "";
+		var initScript = function () {
+			var locHref = root.location.href || "";
+			var img = document.createElement("img");
+			var imgTitle = document.title ? ("Ссылка на страницу «" + document.title.replace(/\[[^\]]*?\]/g, "").trim() + "»") : "";
+			var imgSrc = forcedHTTP + "://chart.googleapis.com/chart?cht=qr&chld=M%7C4&choe=UTF-8&chs=512x512&chl=" + encodeURIComponent(locHref);
+			img.alt = imgTitle;
+			if ("undefined" !== typeof earlySvgSupport && "svg" === earlySvgSupport) {
+				imgSrc = QRCode.generateSVG(locHref, {
+						ecclevel: "M",
+						fillcolor: "#FFFFFF",
+						textcolor: "#191919",
+						margin: 4,
+						modulesize: 8
+					});
+				var XMLS = new XMLSerializer();
+				imgSrc = XMLS.serializeToString(imgSrc);
+				imgSrc = "data:image/svg+xml;base64," + root.btoa(unescape(encodeURIComponent(imgSrc)));
+				img.src = imgSrc;
+			} else {
+				imgSrc = QRCode.generatePNG(locHref, {
+						ecclevel: "M",
+						format: "html",
+						fillcolor: "#FFFFFF",
+						textcolor: "#191919",
+						margin: 4,
+						modulesize: 8
+					});
+				img.src = imgSrc;
+			}
+			addClass(img, "qr-code-img");
+			img.title = imgTitle;
+			removeChildren(holder);
+			appendFragment(img, holder);
+		};
+		if (root.QRCode &&
+			holder &&
+			locHref &&
+			root.getHTTP && root.getHTTP()) {
+
+			initScript();
+		}
+	};
+
+	/*!
+	 * manageExpandingLayerAll
+	 */
+	root.manageExpandingLayerAll = function (callback) {
+		var cb = function () {
+			return callback && "function" === typeof callback && callback();
+		};
+		var btn = getByClass(document, "btn-expand-hidden-layer") || "";
+		var isActiveClass = "is-active";
+		var isBindedClass = "is-binded";
+		var arrange = function (e) {
+			var handle = function () {
+				var _this = this;
+				var layer = _this.parentNode ? _this.parentNode.nextElementSibling : "";
+				if (layer) {
+					toggleClass(_this, isActiveClass);
+					toggleClass(layer, isActiveClass);
+					cb();
+				}
+				return;
+			};
+			if (!hasClass(e, isBindedClass)) {
+				addListener(e, "click", handle);
+				addClass(e, isBindedClass);
+			}
+		};
+		if (btn) {
+			var i,
+			l;
+			for (i = 0, l = btn.length; i < l; i += 1) {
+				arrange(btn[i]);
+			}
+			i = l = null;
+		}
+	};
+
+	/*!
+	 * manageSearchInput
+	 */
+	root.manageSearchInput = function () {
+		var text = document.getElementById("text") || "";
+		var handle = function () {
+			var _this = this;
+			var logic = function () {
+				_this.value = _this.value.replace(/\\/g, "").replace(/ +(?= )/g, " ").replace(/\/+(?=\/)/g, "/") || "";
+			};
+			debounce(logic, 200).call(root);
+		};
+		if (text) {
+			text.focus();
+			addListener(text, "input", handle);
+		}
+	};
+
+	/*!
+	 * manageChaptersSelect
+	 */
+	root.manageChaptersSelect = function () {
+		var chaptersSelect = document.getElementById("chapters-select") || "";
+		var handleChaptersSelect = function () {
+			var _this = this;
+			var hashString = _this.options[_this.selectedIndex].value || "";
+			if (hashString) {
+				var targetObj = hashString ?
+				(isValidId(hashString, true) ? document.getElementById(hashString.replace(/^#/, "")) || "" : "")
+				: "";
+				if (targetObj) {
+					scroll2Top((targetObj ? findPos(targetObj).top : 0), 20000);
+				} else {
+					root.location.href = hashString;
+				}
+			}
+		};
+		if (chaptersSelect) {
+			addListener(chaptersSelect, "change", handleChaptersSelect);
+		}
+	};
+
+	/*!
+	 * manageExpandingLayerAll
+	 */
+	root.manageTablesort = function () {
+		var tableSort = getByClass(document, "table-sort") || "";
+		var initScript = function () {
+			var arrange = function (e) {
+				var tableId = e.id || "";
+				if (tableId) {
+					var table = document.getElementById(tableId) || "";
+					var caption = table ? table.getElementsByTagName("caption")[0] || "" : "";
+					if (!caption) {
+						var tableCaption = document.createElement("caption");
+						prependFragmentBefore(tableCaption, table.firstChild);
+						caption = table.firstChild;
+					}
+					appendFragment("Сортируемая таблица", caption);
+					var tblsort;
+					tblsort = new Tablesort(table);
+				}
+			};
+			var i,
+			l;
+			for (i = 0, l = tableSort.length; i < l; i += 1) {
+				arrange(tableSort[i]);
+			}
+			i = l = null;
+		};
+		if (root.Tablesort && tableSort) {
+			initScript();
+		}
+	};
+
+	/*!
 	 * LoadingSpinner
 	 */
 	root.LoadingSpinner = (function () {
@@ -1317,185 +1481,15 @@ truncString, unescape, VK, Ya*/
 
 		manageIframeLightbox();
 
-		var notifyWriteComment = function () {
-			if (root.getHTTP && !root.getHTTP()) {
-				return;
-			}
-			var cookieKey = "_notifier42_write_comment_";
-			var msgText = "Напишите, что понравилось, а что нет. Регистрироваться не нужно.";
-			var locOrigin = parseLink(root.location.href).origin;
-			var showMsg = function () {
-				var msgObj = document.createElement("a");
-				/* jshint -W107 */
-				msgObj.href = "javascript:void(0);";
-				/* jshint +W107 */
-				appendFragment(msgText, msgObj);
-				var handleMsgObj = function (ev) {
-					ev.stopPropagation();
-					ev.preventDefault();
-					removeListener(msgObj, "click", handleMsgObj);
-					var targetObj = document.getElementById("disqus_thread") || "";
-					scroll2Top((targetObj ? findPos(targetObj).top : 0), 20000);
-				};
-				addListener(msgObj, "click", handleMsgObj);
-				var nf42;
-				nf42 = new Notifier42(msgObj, 8000);
-				Cookies.set(cookieKey, msgText);
-			};
-			if (!Cookies.get(cookieKey) && locOrigin) {
-				var timer = setTimeout(function () {
-					clearTimeout(timer);
-					timer = null;
-					showMsg();
-				}, 16000);
-			}
-		};
-		notifyWriteComment();
-
-		var manageTablesort = function () {
-			var tableSort = getByClass(document, "table-sort") || "";
-			var initScript = function () {
-				var arrange = function (e) {
-					var tableId = e.id || "";
-					if (tableId) {
-						var table = document.getElementById(tableId) || "";
-						var caption = table ? table.getElementsByTagName("caption")[0] || "" : "";
-						if (!caption) {
-							var tableCaption = document.createElement("caption");
-							prependFragmentBefore(tableCaption, table.firstChild);
-							caption = table.firstChild;
-						}
-						appendFragment("Сортируемая таблица", caption);
-						var tblsort;
-						tblsort = new Tablesort(table);
-					}
-				};
-				var i,
-				l;
-				for (i = 0, l = tableSort.length; i < l; i += 1) {
-					arrange(tableSort[i]);
-				}
-				i = l = null;
-			};
-			if (root.Tablesort && tableSort) {
-				initScript();
-			}
-		};
-		manageTablesort();
-
-		var manageChaptersSelect = function () {
-			var chaptersSelect = document.getElementById("chapters-select") || "";
-			var handleChaptersSelect = function () {
-				var _this = this;
-				var hashString = _this.options[_this.selectedIndex].value || "";
-				if (hashString) {
-					var targetObj = hashString ?
-					(isValidId(hashString, true) ? document.getElementById(hashString.replace(/^#/, "")) || "" : "")
-					: "";
-					if (targetObj) {
-						scroll2Top((targetObj ? findPos(targetObj).top : 0), 20000);
-					} else {
-						root.location.href = hashString;
-					}
-				}
-			};
-			if (chaptersSelect) {
-				addListener(chaptersSelect, "change", handleChaptersSelect);
-			}
-		};
-		manageChaptersSelect();
-
-		var manageSearchInput = function () {
-			var searchInput = document.getElementById("text") || "";
-			var handleSearchInput = function () {
-				var _this = this;
-				var logic = function () {
-					_this.value = _this.value.replace(/\\/g, "").replace(/ +(?= )/g, " ").replace(/\/+(?=\/)/g, "/") || "";
-				};
-				debounce(logic, 200).call(root);
-			};
-			if (searchInput) {
-				searchInput.focus();
-				addListener(searchInput, "input", handleSearchInput);
-			}
-		};
-		manageSearchInput();
-
-		var manageExpandingLayerAll = function () {
-			var btn = getByClass(document, "btn-expand-hidden-layer") || "";
-			var handleBtn = function () {
-				var _this = this;
-				var layer = _this.parentNode ? _this.parentNode.nextElementSibling : "";
-				if (layer) {
-					toggleClass(_this, isActiveClass);
-					toggleClass(layer, isActiveClass);
-				}
-				return;
-			};
-			var arrange = function (e) {
-				addListener(e, "click", handleBtn);
-			};
-			if (btn) {
-				var i,
-				l;
-				for (i = 0, l = btn.length; i < l; i += 1) {
-					arrange(btn[i]);
-				}
-				i = l = null;
-			}
-		};
 		manageExpandingLayerAll();
 
-		root.locationQrcodeInstance = null;
-		var manageLocationQrcode = function () {
-			var holder = getByClass(document, "holder-location-qrcode")[0] || "";
-			var locHref = root.location.href || "";
-			var initScript = function () {
-				if (!root.locationQrcodeInstance) {
-					root.locationQrcodeInstance = true;
-					var locHref = root.location.href || "";
-					var img = document.createElement("img");
-					var imgTitle = document.title ? ("Ссылка на страницу «" + document.title.replace(/\[[^\]]*?\]/g, "").trim() + "»") : "";
-					var imgSrc = forcedHTTP + "://chart.googleapis.com/chart?cht=qr&chld=M%7C4&choe=UTF-8&chs=512x512&chl=" + encodeURIComponent(locHref);
-					img.alt = imgTitle;
-					if ("undefined" !== typeof earlySvgSupport && "svg" === earlySvgSupport) {
-						imgSrc = QRCode.generateSVG(locHref, {
-								ecclevel: "M",
-								fillcolor: "#FFFFFF",
-								textcolor: "#191919",
-								margin: 4,
-								modulesize: 8
-							});
-						var XMLS = new XMLSerializer();
-						imgSrc = XMLS.serializeToString(imgSrc);
-						imgSrc = "data:image/svg+xml;base64," + root.btoa(unescape(encodeURIComponent(imgSrc)));
-						img.src = imgSrc;
-					} else {
-						imgSrc = QRCode.generatePNG(locHref, {
-								ecclevel: "M",
-								format: "html",
-								fillcolor: "#FFFFFF",
-								textcolor: "#191919",
-								margin: 4,
-								modulesize: 8
-							});
-						img.src = imgSrc;
-					}
-					addClass(img, "qr-code-img");
-					img.title = imgTitle;
-					removeChildren(holder);
-					appendFragment(img, holder);
-				}
-			};
-			if (root.QRCode &&
-				holder &&
-				locHref &&
-				root.getHTTP && root.getHTTP()) {
-
-				initScript();
-			}
-		};
 		manageLocationQrcode();
+
+		manageTablesort();
+
+		manageSearchInput();
+
+		manageChaptersSelect();
 
 		var manageNavMenu = function () {
 			var container = document.getElementById("container") || "";
@@ -1654,6 +1648,41 @@ truncString, unescape, VK, Ya*/
 			}
 		};
 		manageMenuMore();
+
+		var notifyWriteComment = function () {
+			if (root.getHTTP && !root.getHTTP()) {
+				return;
+			}
+			var cookieKey = "_notifier42_write_comment_";
+			var msgText = "Напишите, что понравилось, а что нет. Регистрироваться не нужно.";
+			var locOrigin = parseLink(root.location.href).origin;
+			var showMsg = function () {
+				var msgObj = document.createElement("a");
+				/* jshint -W107 */
+				msgObj.href = "javascript:void(0);";
+				/* jshint +W107 */
+				appendFragment(msgText, msgObj);
+				var handleMsgObj = function (ev) {
+					ev.stopPropagation();
+					ev.preventDefault();
+					removeListener(msgObj, "click", handleMsgObj);
+					var targetObj = document.getElementById("disqus_thread") || "";
+					scroll2Top((targetObj ? findPos(targetObj).top : 0), 20000);
+				};
+				addListener(msgObj, "click", handleMsgObj);
+				var nf42;
+				nf42 = new Notifier42(msgObj, 8000);
+				Cookies.set(cookieKey, msgText);
+			};
+			if (!Cookies.get(cookieKey) && locOrigin) {
+				var timer = setTimeout(function () {
+					clearTimeout(timer);
+					timer = null;
+					showMsg();
+				}, 16000);
+			}
+		};
+		notifyWriteComment();
 
 		var hideOtherIsSocial = function (thisObj) {
 			var _thisObj = thisObj || this;

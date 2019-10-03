@@ -595,7 +595,7 @@ WheelIndicator, Ya*/
 					e.title = "" + (parseLink(url).hostname || "") + " откроется в новой вкладке";
 					if (root.getHTTP && root.getHTTP()) {
 						e.target = "_blank";
-						e.rel = "noopener";
+						e.setAttribute("rel", "noopener noreferrer");
 					} else {
 						addListener(e, "click", handleLink.bind(null, url));
 					}
@@ -1023,7 +1023,7 @@ WheelIndicator, Ya*/
 				}
 				if (imgSrc && linkHref) {
 					link.href = linkHref;
-					link.rel = "noopener";
+					link.setAttribute("rel", "noopener noreferrer");
 					link.target = "_blank";
 					link.title = "Скачать приложение";
 					if (!supportsSvgAsImg) {

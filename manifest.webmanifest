@@ -1,7 +1,6 @@
 {
 	"name": "noushevr",
 	"short_name": "noushevr",
-	"manifest_version": 2,
 	"icons": [{
 		"src": "/android-chrome-192x192.png",
 		"sizes": "192x192",
@@ -18,13 +17,9 @@
 		"type": "image/png"
 	}],
 	"scope": "/",
-	"mjs_access_whitelist": [{
-		"url": "https://noushevr.github.io/"
-	}],
 	"start_url": "https://noushevr.github.io/",
 	"display": "standalone",
 	"orientation": "any",
-	"ms_TileColor": "#D25235",
 	"theme_color": "#D25235",
 	"background_color": "#D25235"
 }

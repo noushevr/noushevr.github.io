@@ -1,0 +1,60 @@
+{
+	"pages": [{
+			"href": "/pages/about/about_boarding.html",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/@1x/contents-banner-about-640x360.jpg",
+			"width": 640,
+			"height": 360,
+			"title": "Все о школе",
+			"text": "Цель школы — качественное образование без стресса!"
+		}, {
+			"href": "/pages/events/events_photo_shoot_02-01-2018.html",
+			"src": "./libs/noushevr-contents-cards/img/staticflickr-contents-banner/@1x/25209730817_4c415518e2_z.jpg",
+			"width": 640,
+			"height": 360,
+			"title": "Фотосессия 2 февраля",
+			"text": "Четверг. Прогулка. Уборка снега перед школой. Фотосессия 2 февраля 2018 г."
+		}, {
+			"href": "/pages/events/events_fire_friend_fire_enemy.html",
+			"src": "./libs/noushevr-contents-cards/img/staticflickr-contents-banner/@1x/38954249455_101a1800e2_z.jpg",
+			"width": 640,
+			"height": 360,
+			"title": "Огонь-друг, огонь-враг",
+			"text": "Участники окружного этапа городского конкурса «Огонь-друг, огонь-враг»."
+		}, {
+			"href": "/pages/events/events_new_year_2018_celebration.html",
+			"src": "./libs/noushevr-contents-cards/img/staticflickr-contents-banner/@1x/27988205899_088278ecdb_z.jpg",
+			"width": 640,
+			"height": 360,
+			"title": "Новый Год 2018 (видео)",
+			"text": "Видео праздничного предновогоднего концерта. 28 декабря 2017 г."
+		}, {
+			"href": "/pages/about/about_students.html",
+			"src": "./libs/noushevr-contents-cards/img/staticflickr-contents-banner/@1x/28079772599_b1de1cd120_z.jpg",
+			"width": 640,
+			"height": 360,
+			"title": "Ученики",
+			"text": "Мы гордимся нашими одаренными выпускниками, закончившими школу с медалями и отличными оценками."
+		}, {
+			"href": "/pages/about/about_staff.html",
+			"src": "./libs/noushevr-contents-cards/img/staticflickr-contents-banner/@1x/39746372932_bc5309e2b1_z.jpg",
+			"width": 640,
+			"height": 360,
+			"title": "Учителя",
+			"text": "Наши учителя развивают в детях самостоятельное стремление к получению знаний. Педагоги руководят становлением в учениках познавательных способностей, внимания и усидчивости, мышления и речи."
+		}, {
+			"href": "https://www.youtube.com/channel/UCM_FKyn8OrpJV_MylKOaohA",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/@1x/contents-banner-youtube-640x360.jpg",
+			"width": 640,
+			"height": 360,
+			"title": "Канал на YouTube",
+			"text": "Учебный 2015 2016 год, День учителя 2016, 1 сентября 2016, 8 марта 2016."
+		}, {
+			"href": "https://vk.com/shevr",
+			"src": "./libs/noushevr-contents-cards/img/sprite-contents-banner/@1x/contents-banner-vk-640x360.jpg",
+			"width": 640,
+			"height": 360,
+			"title": "Паблик во ВКонтакте",
+			"text": "Новости, объявления, впечатления и комментарии, архив фото и видео."
+		}
+	]
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" media="screen" href="/feeds/rss2enclosuresfull.xsl"?>
+<rss xmlns:media="http://search.yahoo.com/mrss/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+	<channel>
+		<generator>RSS Builder by B!Soft</generator>
+		<title>Частная школа в Тушино (ШЭВР)</title>
+		<link>https://noushevr.github.io/</link>
+		<description>Частная средняя общеобразовательная (1—11)</description>
+		<language>ru</language>
+		<managingEditor>englishextra@mail.ru (Serguei Shimansky)</managingEditor>
+		<webMaster>englishextra@mail.ru (Serguei Shimansky)</webMaster>
+		<copyright>© 2021 noushevr</copyright>
+		<image>
+			<title>Частная школа в Тушино (ШЭВР)</title>
+			<link>https://noushevr.github.io/</link>
+			<url>https://noushevr.github.io/apple-touch-icon.png</url>
+			<width>144</width>
+			<height>144</height>
+		</image>
+		<atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" type="application/rss+xml" href="https://noushevr.github.io/feeds/pages.xml" /><feedburner:info xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" uri="englishextra" /><atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com/" /><media:rating>nonadult</media:rating><media:copyright>© 2021 noushevr</media:copyright><itunes:owner><itunes:email>englishextra@mail.ru</itunes:email></itunes:owner><itunes:explicit>no</itunes:explicit>
+		<!-- https://gist.github.com/skattyadz/814315 -->
+		<itunes:category text="Education"><itunes:category text="Language Courses"/></itunes:category><itunes:subtitle>Частная средняя общеобразовательная (1—11)</itunes:subtitle>
+		<item>
+			<title>Содержание - Частная школа в Тушино (ШЭВР)</title>
+			<pubDate>Fri, 9 Feb 2018 12:10:42 +0300</pubDate>
+			<link>https://noushevr.github.io/contents.html</link>
+			<guid isPermaLink="true">https://noushevr.github.io/contents.html</guid>
+			<author>englishextra@mail.ru (Serguei Shimansky)</author>
+			<comments>https://noushevr.github.io/contents.html</comments>
+			<category>contents</category>
+			<enclosure url="http://noushevr.github.io/image_src.jpg" length="47000" type="image/jpeg" />
+			<description><![CDATA[Содержание - Частная школа в Тушино (ШЭВР)]]></description>
+		</item>
+	</channel>
+</rss>
